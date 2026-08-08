@@ -4,15 +4,15 @@ export default function HeritagePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Banner for Heritage */}
-      <section className="bg-nirmal-dark text-nirmal-cream py-16 text-center border-b border-nirmal-maroon/20">
+      <section className="bg-nirmal-cream text-nirmal-dark py-16 text-center border-b border-nirmal-maroon/20">
         <div className="container mx-auto px-6 max-w-3xl">
-          <span className="text-nirmal-gold tracking-widest uppercase text-xs font-semibold mb-3 block">
+          <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-3 block">
             The Story of Purity
           </span>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
             A Quarter Century of Uncompromising Quality
           </h1>
-          <p className="text-nirmal-cream/70 leading-relaxed">
+          <p className="text-nirmal-dark/70 leading-relaxed">
             From humble beginnings in Dehradun in 2001 to becoming a trusted name in Indian households, discover the tradition, care, and craftsmanship behind every Nirmal Gold spice pouch.
           </p>
         </div>

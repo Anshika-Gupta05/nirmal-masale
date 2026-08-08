@@ -45,7 +45,7 @@ export default function CheckoutPage() {
               <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Address</label>
               <textarea className="w-full border border-nirmal-dark/20 rounded-xl px-4 py-3 bg-[#f9f0e6]/30 focus:outline-none focus:border-nirmal-maroon" rows={3}></textarea>
             </div>
-            <button type="button" className="w-full bg-nirmal-maroon text-nirmal-cream font-semibold py-4 rounded-xl hover:bg-nirmal-maroon/90 transition-all shadow-md mt-4">
+            <button type="button" className="w-full bg-nirmal-cta text-nirmal-cream font-semibold py-4 rounded-xl hover:bg-nirmal-cta/90 transition-all shadow-md mt-4">
               Proceed to Payment
             </button>
           </form>

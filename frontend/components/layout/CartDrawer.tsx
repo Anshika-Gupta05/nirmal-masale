@@ -132,7 +132,7 @@ export default function CartDrawer({
               <Link
                 href="/checkout"
                 onClick={onClose}
-                className="w-full bg-nirmal-gold text-nirmal-dark font-semibold py-3.5 rounded-xl hover:bg-nirmal-gold/90 transition-all shadow-md block text-center"
+                className="w-full bg-nirmal-cta text-nirmal-cream font-semibold py-3.5 rounded-xl hover:bg-nirmal-cta/90 transition-all shadow-md block text-center"
               >
                 Proceed to Checkout
               </Link>

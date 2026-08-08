@@ -35,6 +35,13 @@ export default function TrackOrderPage() {
   return (
     <div className="container mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[60vh]">
       <div className="max-w-md w-full bg-white p-8 rounded-2xl border border-nirmal-maroon/10 shadow-sm text-center">
+        <div className="w-14 h-14 rounded-full bg-nirmal-maroon/10 flex items-center justify-center mx-auto mb-5">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-nirmal-maroon" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 8 12 3 3 8l9 5 9-5Z" />
+            <path d="M3 8v8l9 5 9-5V8" />
+            <path d="M12 13v8" />
+          </svg>
+        </div>
         <h1 className="font-serif text-3xl font-bold text-nirmal-dark mb-2">Track Your Order</h1>
         <p className="text-sm text-nirmal-dark/70 mb-8">Enter your Order ID below to check the real-time shipping status of your spices.</p>
         

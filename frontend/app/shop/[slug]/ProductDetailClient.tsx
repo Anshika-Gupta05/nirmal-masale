@@ -43,7 +43,7 @@ export default function ProductDetailClient({ dbProduct }: { dbProduct: any }) {
         
         {/* Left: Product Image Showcase - PURE WHITE + BLEND MODE */}
         <div className="relative h-96 lg:h-[500px] bg-white border border-nirmal-maroon/10 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm">
-          <span className="absolute top-4 left-4 bg-nirmal-maroon text-white text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10">
+          <span className="absolute top-4 left-4 bg-white/90 text-nirmal-maroon text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
             {dbProduct.category}
           </span>
           <div className="relative w-full h-full">
@@ -88,7 +88,7 @@ export default function ProductDetailClient({ dbProduct }: { dbProduct: any }) {
                   onClick={() => setSelectedSizeIndex(index)}
                   className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-sm border ${
                     selectedSizeIndex === index
-                      ? 'bg-nirmal-maroon text-white border-nirmal-maroon'
+                      ? 'bg-nirmal-maroon text-nirmal-cream border-nirmal-maroon'
                       : 'bg-transparent text-nirmal-dark border-nirmal-dark/20 hover:border-nirmal-maroon'
                   }`}
                 >
@@ -112,7 +112,7 @@ export default function ProductDetailClient({ dbProduct }: { dbProduct: any }) {
               <div className="flex items-center border border-nirmal-dark/20 rounded-xl overflow-hidden bg-white">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3.5 py-2 text-nirmal-dark hover:bg-nirmal-maroon hover:text-white transition-colors"
+                  className="px-3.5 py-2 text-nirmal-dark hover:bg-nirmal-maroon hover:text-nirmal-cream transition-colors"
                 >
                   -
                 </button>
@@ -121,7 +121,7 @@ export default function ProductDetailClient({ dbProduct }: { dbProduct: any }) {
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-3.5 py-2 text-nirmal-dark hover:bg-nirmal-maroon hover:text-white transition-colors"
+                  className="px-3.5 py-2 text-nirmal-dark hover:bg-nirmal-maroon hover:text-nirmal-cream transition-colors"
                 >
                   +
                 </button>
@@ -130,7 +130,7 @@ export default function ProductDetailClient({ dbProduct }: { dbProduct: any }) {
               {/* Add to Cart CTA */}
               <button 
                 onClick={handleAddToCart}
-                className="flex-grow sm:flex-grow-0 bg-nirmal-gold text-nirmal-dark font-semibold px-6 py-3 rounded-xl hover:bg-nirmal-gold/90 transition-all shadow-md text-sm"
+                className="flex-grow sm:flex-grow-0 bg-nirmal-cta text-nirmal-cream font-semibold px-6 py-3 rounded-xl hover:bg-nirmal-cta/90 transition-all shadow-md text-sm"
               >
                 Add to Cart
               </button>

@@ -20,28 +20,28 @@ export default function HeritageSection() {
         <div className="grid md:grid-cols-3 gap-8 relative">
           
           {/* Milestone 1 */}
-          <div className="bg-nirmal-cream/5 border border-nirmal-gold/20 p-8 rounded-xl backdrop-blur-sm transition-transform hover:-translate-y-1">
-            <span className="text-nirmal-gold font-serif text-4xl font-bold block mb-4">2001</span>
+          <div className="bg-nirmal-cream text-nirmal-dark p-8 rounded-xl shadow-lg transition-transform hover:-translate-y-1">
+            <span className="text-nirmal-maroon font-serif text-4xl font-bold block mb-4">2001</span>
             <h3 className="font-serif text-xl font-bold mb-3">The Foundation</h3>
-            <p className="text-nirmal-cream/80 leading-relaxed text-sm">
+            <p className="text-nirmal-dark/70 leading-relaxed text-sm">
               Started with a vision by Mr. Sunil Kumar Gupta to source, clean, and pack authentic spices without losing their natural essential oils.
             </p>
           </div>
 
           {/* Milestone 2 */}
-          <div className="bg-nirmal-cream/5 border border-nirmal-gold/20 p-8 rounded-xl backdrop-blur-sm transition-transform hover:-translate-y-1">
-            <span className="text-nirmal-gold font-serif text-4xl font-bold block mb-4">Evolution</span>
+          <div className="bg-nirmal-cream text-nirmal-dark p-8 rounded-xl shadow-lg transition-transform hover:-translate-y-1">
+            <span className="text-nirmal-maroon font-serif text-4xl font-bold block mb-4">Evolution</span>
             <h3 className="font-serif text-xl font-bold mb-3">Purity & Hygiene Standards</h3>
-            <p className="text-nirmal-cream/80 leading-relaxed text-sm">
+            <p className="text-nirmal-dark/70 leading-relaxed text-sm">
               Integrated modern hygienic packaging lines while retaining traditional processing methods to ensure peak flavor in every single pouch.
             </p>
           </div>
 
           {/* Milestone 3 */}
-          <div className="bg-nirmal-cream/5 border border-nirmal-gold/20 p-8 rounded-xl backdrop-blur-sm transition-transform hover:-translate-y-1">
-            <span className="text-nirmal-gold font-serif text-4xl font-bold block mb-4">Today</span>
+          <div className="bg-nirmal-cream text-nirmal-dark p-8 rounded-xl shadow-lg transition-transform hover:-translate-y-1">
+            <span className="text-nirmal-maroon font-serif text-4xl font-bold block mb-4">Today</span>
             <h3 className="font-serif text-xl font-bold mb-3">A Household Staple</h3>
-            <p className="text-nirmal-cream/80 leading-relaxed text-sm">
+            <p className="text-nirmal-dark/70 leading-relaxed text-sm">
               Proudly serving thousands of homes under the Nirmal Gold and Saviora Spices banners, trusted for uncompromising quality and royal taste.
             </p>
           </div>

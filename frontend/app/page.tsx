@@ -1,7 +1,6 @@
 import HeritageSection from '@/components/heritage/HeritageSection';
 import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
-import Image from 'next/image';
 
 // Fetch data directly from your FastAPI backend
 async function getFeaturedProducts() {
@@ -38,7 +37,7 @@ export default async function Home() {
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
         
         <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
-          <span className="bg-nirmal-gold/25 text-nirmal-gold border border-nirmal-gold/30 text-xs px-4 py-1.5 rounded-full uppercase tracking-widest font-semibold inline-block mb-6">
+          <span className="bg-nirmal-gold text-nirmal-dark text-xs px-4 py-1.5 rounded-full uppercase tracking-widest font-semibold inline-block mb-6">
             100% Pure & Stone Ground
           </span>
           
@@ -102,28 +101,6 @@ export default async function Home() {
 
       {/* Heritage Narrative Section */}
       <HeritageSection />
-
-      {/* Simple Footer with Logo Image */}
-      <footer className="bg-nirmal-dark text-nirmal-cream py-12 mt-auto border-t border-nirmal-maroon/20">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start gap-3">
-            <div className="relative w-28 h-12">
-              <Image
-                src="/nirmal_gold_masale_logo.png"
-                alt="Nirmal Masale Logo"
-                fill
-                className="object-contain md:object-left"
-              />
-            </div>
-            <p className="text-sm text-nirmal-cream/60">
-              Pure Spices, Royal Taste. Established 2001 in Dehradun.
-            </p>
-          </div>
-          <p className="text-xs text-nirmal-cream/40">
-            &copy; {new Date().getFullYear()} Nirmal Masale. All rights reserved.
-          </p>
-        </div>
-      </footer>
 
     </div>
   );

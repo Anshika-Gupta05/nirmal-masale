@@ -57,7 +57,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        <span className="absolute top-3 left-3 bg-nirmal-maroon text-white text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold z-10">
+        <span className="absolute top-3 left-3 bg-white/90 text-nirmal-maroon text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
           {product.category}
         </span>
       </div>
@@ -80,7 +80,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
                 onClick={() => setSelectedSizeIndex(index)}
                 className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all ${
                   selectedSizeIndex === index
-                    ? 'bg-nirmal-maroon text-white border-nirmal-maroon'
+                    ? 'bg-nirmal-maroon text-nirmal-cream border-nirmal-maroon'
                     : 'bg-transparent text-nirmal-dark border-nirmal-dark/20 hover:border-nirmal-maroon'
                 }`}
               >
@@ -101,7 +101,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
 
           <button 
             onClick={handleAddToCart}
-            className="bg-nirmal-gold text-nirmal-dark font-semibold px-4 py-2.5 rounded-xl text-sm hover:bg-nirmal-gold/90 transition-colors shadow-sm"
+            className="bg-nirmal-cta text-nirmal-cream font-semibold px-4 py-2.5 rounded-xl text-sm hover:bg-nirmal-cta/90 transition-colors shadow-sm"
           >
             Add to Cart
           </button>

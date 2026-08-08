@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors */
-  --color-nirmal-maroon: #7E1519;
-  --color-nirmal-gold: #D4AF37;
-  --color-nirmal-cream: #FDFBF7;
-  --color-nirmal-dark: #2D2D2D;
+  /* Brand Colors — finalized palette */
+  --color-nirmal-cream: #FDFBF7;      /* base (60%) — page bg, cards, nav */
+  --color-nirmal-maroon: #7E1519;     /* primary (30%) — header, footer, hero, headings */
+  --color-nirmal-cta: #C1440E;        /* action (10%) — Add to Cart / Buy Now / Checkout ONLY */
+  --color-nirmal-gold: #D4AF37;       /* decorative accent — borders, badges, price highlight */
+  --color-nirmal-dark: #2D2D2D;       /* body text */
+  --color-nirmal-blue: #1B4D89;       /* optional — category tags/chips only */
 
   /* Brand Fonts */
   --font-serif: var(--font-playfair);
