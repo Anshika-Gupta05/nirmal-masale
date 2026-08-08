@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-nirmal-maroon: #7E1519;
+  --color-nirmal-gold: #D4AF37;
+  --color-nirmal-cream: #FDFBF7;
+  --color-nirmal-dark: #2D2D2D;
+
+  /* Brand Fonts */
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background-color: var(--color-nirmal-cream);
+  color: var(--color-nirmal-dark);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}

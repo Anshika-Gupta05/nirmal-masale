@@ -1,0 +1,15 @@
+requests
+pydantic
+fastapi
+uvicorn
+python-dotenv
+pandas
+numpy
+langchain
+langchain-core
+langchain-community
+langgraph
+sentence-transformers
+transformers
+torch
+scikit-learn

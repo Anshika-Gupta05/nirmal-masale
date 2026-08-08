@@ -1,0 +1,22 @@
+# backend/.gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Databases
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+
+# Mac OS files
+.DS_Store
