@@ -138,5 +138,19 @@ def create_order(request: CheckoutRequestSchema):
         "order_number": tracking_number
     }
 
+@app.get("/api/orders/{order_number}")
+def get_order(order_number: str):
+    collection = get_orders_collection()
+    order = collection.find_one({"order_number": order_number.strip().upper()})
+
+    if not order:
+        return {"status": "error", "message": "Order not found"}
+
+    order["id"] = str(order["_id"])
+    del order["_id"]
+
+    return {"status": "success", "data": order}
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

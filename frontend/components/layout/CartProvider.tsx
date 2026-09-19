@@ -17,21 +17,43 @@ interface CartContextType {
   addToCart: (item: CartItem) => void;
   updateQuantity: (id: string, size: string, delta: number) => void;
   removeItem: (id: string, size: string) => void;
+  clearCart: () => void;
   openDrawer: () => void;
   closeDrawer: () => void;
   cartCount: number;
+  subtotal: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+const STORAGE_KEY = 'nirmal-masale-cart';
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // Hydrate cart from localStorage on first mount
   useEffect(() => {
     setMounted(true);
+    try {
+      const saved = window.localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setItems(JSON.parse(saved));
+      }
+    } catch {
+      // Ignore corrupt/blocked storage — start with an empty cart
+    }
   }, []);
+
+  // Persist cart whenever it changes
+  useEffect(() => {
+    if (!mounted) return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // Storage may be unavailable (private browsing, etc.) — fail silently
+    }
+  }, [items, mounted]);
 
   const addToCart = (newItem: CartItem) => {
     setItems((prev) => {
@@ -66,7 +88,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((prev) => prev.filter((item) => !(item.id === id && item.selectedSize === size)));
   };
 
+  const clearCart = () => setItems([]);
+
   const cartCount = items.reduce((total, item) => total + item.quantity, 0);
+  const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
@@ -75,9 +100,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         addToCart,
         updateQuantity,
         removeItem,
+        clearCart,
         openDrawer: () => setIsDrawerOpen(true),
         closeDrawer: () => setIsDrawerOpen(false),
         cartCount,
+        subtotal,
       }}
     >
       {children}

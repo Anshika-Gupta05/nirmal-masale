@@ -1,4 +1,5 @@
 import os
+import re
 import urllib.parse
 import pandas as pd
 from pymongo import MongoClient
@@ -15,6 +16,34 @@ MONGO_URI = f"mongodb+srv://{username}:{password}@{cluster}/?retryWrites=true&w=
 client = MongoClient(MONGO_URI)
 db = client["nirmal_masale_db"]
 products_collection = db["products"]
+
+# Known spelling variants -> canonical spelling, so the same spice always
+# ends up under one name regardless of how a row was typed in the sheet.
+# (Keep this in sync with backend/migrate_clean_products.py.)
+SPELLING_ALIASES = {
+    "dhania": "dhaniya",
+    "chili": "chilli",
+    "zeera": "jeera",
+}
+
+
+def normalize_item_name(raw_name: str) -> str:
+    """Cleans a raw ITEM cell so the same spice never ends up as two
+    different product names (e.g. a stray trailing price, or a spelling
+    variant like 'Dhania' vs 'Dhaniya')."""
+    name = raw_name.strip()
+    # Strip a trailing price annotation like "Rs 10", "Rs. 10", "₹10"
+    name = re.sub(r"\s*[-–]?\s*(rs\.?|₹)\s*\d+\s*/?-?\s*$", "", name, flags=re.IGNORECASE).strip()
+    name = re.sub(r"\s+", " ", name)
+    fixed_words = []
+    for word in name.split(" "):
+        key = word.lower()
+        if key in SPELLING_ALIASES:
+            canonical = SPELLING_ALIASES[key]
+            fixed_words.append(canonical.capitalize() if word[:1].isupper() else canonical)
+        else:
+            fixed_words.append(word)
+    return " ".join(fixed_words).strip()
 
 # 📸 The exact list of images currently in your products folder
 IMAGE_FILES = [
@@ -128,7 +157,7 @@ def extract_sheet_data(xls, sheet_name, skiprows, col_names, item_col, size_col,
     products = []
     for _, row in df.iterrows():
         try:
-            name = str(row[item_col]).title().strip()
+            name = normalize_item_name(str(row[item_col]).title().strip())
             size = str(row[size_col]).strip()
             price = float(row[price_col])
             slug = f"nirmal-{name.lower().replace(' ', '-')}-{size.lower().replace(' ', '')}"
@@ -157,17 +186,43 @@ def seed_database():
 
     print("Reading MEDITEDRATELIST.xlsx...")
     xls = pd.ExcelFile('MEDITEDRATELIST.xlsx')
-    all_products = []
+    flat_rows = []
 
-    all_products.extend(extract_sheet_data(xls, 'Table 1', 2, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
-    all_products.extend(extract_sheet_data(xls, 'Table 2', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
-    all_products.extend(extract_sheet_data(xls, 'Table 3', 0, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
-    all_products.extend(extract_sheet_data(xls, 'Table 4', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR'], 'ITEM', 'SIZE', 'MRP'))
-    all_products.extend(extract_sheet_data(xls, 'Table 5', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET'], 'ITEM', 'SIZE', 'MRP'))
+    flat_rows.extend(extract_sheet_data(xls, 'Table 1', 2, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
+    flat_rows.extend(extract_sheet_data(xls, 'Table 2', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
+    flat_rows.extend(extract_sheet_data(xls, 'Table 3', 0, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR', 'SCH'], 'ITEM', 'SIZE', 'MRP'))
+    flat_rows.extend(extract_sheet_data(xls, 'Table 4', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET', 'TAR'], 'ITEM', 'SIZE', 'MRP'))
+    flat_rows.extend(extract_sheet_data(xls, 'Table 5', 1, ['SN', 'ITEM', 'SIZE', 'CASE', 'MRP', 'RET'], 'ITEM', 'SIZE', 'MRP'))
+
+    # Group the flat (one row = one size) rows into one document per product,
+    # each holding a `sizes` array — this matches the live schema and is what
+    # keeps every pack size of the same spice on a single product card.
+    grouped = {}
+    for row in flat_rows:
+        key = row["name"].lower()
+        if key not in grouped:
+            grouped[key] = {
+                "name": row["name"],
+                "category": row["category"],
+                "slug": row["slug"].rsplit("-", 1)[0] if "-" in row["slug"] else row["slug"],
+                "description": row["description"],
+                "image_url": row["image_url"],
+                "sizes": [],
+            }
+        existing_weights = {s["weight"] for s in grouped[key]["sizes"]}
+        if row["weight"] not in existing_weights:
+            grouped[key]["sizes"].append({"weight": row["weight"], "price": row["price"]})
+        if not grouped[key]["image_url"] and row["image_url"]:
+            grouped[key]["image_url"] = row["image_url"]
+
+    for product in grouped.values():
+        product["sizes"].sort(key=lambda s: s["price"])
+
+    all_products = list(grouped.values())
 
     if all_products:
         result = products_collection.insert_many(all_products)
-        print(f"✅ Successfully seeded {len(result.inserted_ids)} products with intelligent categories!")
+        print(f"✅ Successfully seeded {len(result.inserted_ids)} products (grouped by name, with intelligent categories)!")
     else:
         print("No products found to insert.")
 
