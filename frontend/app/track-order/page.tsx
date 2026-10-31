@@ -41,7 +41,7 @@ export default function TrackOrderPage() {
 
   return (
     <div className="container mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[60vh]">
-      <div className="max-w-md w-full bg-white p-8 rounded-2xl border border-nirmal-maroon/10 shadow-sm text-center">
+      <div className="max-w-md w-full bg-surface p-8 rounded-2xl border border-nirmal-maroon/10 shadow-sm text-center">
         <div className="w-14 h-14 rounded-full bg-nirmal-maroon/10 flex items-center justify-center mx-auto mb-5">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-nirmal-maroon" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 8 12 3 3 8l9 5 9-5Z" />
@@ -49,7 +49,7 @@ export default function TrackOrderPage() {
             <path d="M12 13v8" />
           </svg>
         </div>
-        <h1 className="font-serif text-3xl font-bold text-nirmal-dark mb-2">Track Your Order</h1>
+        <h1 className="font-serif text-3xl font-semibold text-nirmal-dark mb-2">Track Your Order</h1>
         <p className="text-sm text-nirmal-dark/70 mb-8">Enter your Order ID below to check the real-time shipping status of your spices.</p>
 
         <form className="space-y-4" onSubmit={handleTrack}>
@@ -60,7 +60,7 @@ export default function TrackOrderPage() {
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
               placeholder="e.g. NRM-A1B2C3"
-              className="w-full border border-nirmal-dark/20 rounded-xl px-4 py-3 bg-[#f9f0e6]/30 focus:outline-none focus:border-nirmal-maroon text-nirmal-dark"
+              className="w-full border border-gold/30 rounded-xl px-4 py-3 bg-ink/60 text-ivory placeholder:text-ivory-muted/50 focus:outline-none focus:border-nirmal-maroon text-nirmal-dark"
               required
             />
           </div>
@@ -74,7 +74,7 @@ export default function TrackOrderPage() {
         </form>
 
         {error && (
-          <p className="mt-6 text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">
+          <p className="mt-6 text-sm text-red-300 bg-red-500/10 p-3 rounded-xl border border-red-400/30">
             {error}
           </p>
         )}
@@ -97,8 +97,8 @@ export default function TrackOrderPage() {
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 ${
                           i <= currentStepIndex
-                            ? 'bg-nirmal-maroon border-nirmal-maroon text-white'
-                            : 'bg-white border-nirmal-dark/20 text-nirmal-dark/30'
+                            ? 'bg-nirmal-maroon border-nirmal-maroon text-ink'
+                            : 'bg-ink border-gold/30 text-ivory/40'
                         }`}
                       >
                         {i <= currentStepIndex ? '✓' : i + 1}
@@ -110,10 +110,10 @@ export default function TrackOrderPage() {
               </div>
             )}
 
-            <div className="bg-[#f9f0e6]/40 p-5 rounded-xl border border-nirmal-maroon/10">
+            <div className="bg-ink/50 p-5 rounded-xl border border-nirmal-maroon/10">
               <div className="flex justify-between items-center mb-3 pb-3 border-b border-nirmal-dark/10">
                 <span className="text-xs font-semibold uppercase text-nirmal-dark/60">Status</span>
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">
+                <span className="bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 text-xs px-2.5 py-1 rounded-full font-bold">
                   {orderData.status}
                 </span>
               </div>

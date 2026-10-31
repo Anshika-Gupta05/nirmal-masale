@@ -72,16 +72,15 @@ export default async function ShopPage({
 
   return (
     <div>
-      <div className="bg-nirmal-maroon text-nirmal-cream py-14 md:py-20 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-spice-dots" />
+      <div className="bg-ink bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(94,26,23,0.85),transparent_70%)] border-y border-gold/20 text-ivory py-14 md:py-20 relative overflow-hidden">
         <div className="container mx-auto px-6 text-center max-w-2xl relative z-10">
           <span className="text-nirmal-gold tracking-widest uppercase text-xs font-semibold mb-2 block">
             Our Authentic Collection
           </span>
-          <h1 className="font-serif text-4xl font-bold mb-4">
+          <h1 className="font-serif text-4xl font-semibold mb-4">
             Pure Spices for Your Kitchen
           </h1>
-          <p className="text-nirmal-cream/80">
+          <p className="text-ivory/80">
             Explore our full range of traditionally processed, stone-ground, and hygienically packed spices — blended, ground, and whole.
           </p>
         </div>

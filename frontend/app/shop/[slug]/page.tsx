@@ -50,7 +50,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <path d="m21 21-4.3-4.3" />
           </svg>
         </div>
-        <h1 className="font-serif text-2xl font-bold text-nirmal-dark mb-3">Product not found</h1>
+        <h1 className="font-serif text-2xl font-semibold text-nirmal-dark mb-3">Product not found</h1>
         <p className="text-nirmal-dark/60 text-sm mb-8">
           We couldn&apos;t find &ldquo;{resolvedParams.slug}&rdquo; in our catalog. It may have been renamed or is out of stock.
         </p>

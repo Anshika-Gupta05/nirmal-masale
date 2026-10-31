@@ -31,13 +31,13 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="py-16 md:py-20 bg-[#f9f0e6]/50">
+    <section className="py-16 md:py-20 bg-surface/60">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
             Loved By Home Cooks
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-nirmal-dark">
+          <h2 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark">
             What Our Customers Say
           </h2>
         </div>
@@ -46,7 +46,7 @@ export default function Testimonials() {
           {TESTIMONIALS.map((t) => (
             <div
               key={t.name}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-nirmal-maroon/10 flex flex-col"
+              className="bg-surface rounded-2xl p-6 shadow-sm border border-nirmal-maroon/10 flex flex-col"
             >
               <div className="flex gap-0.5 text-nirmal-gold mb-4" aria-hidden="true">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -59,7 +59,7 @@ export default function Testimonials() {
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3 pt-4 border-t border-nirmal-dark/10">
-                <div className="w-10 h-10 rounded-full bg-nirmal-maroon text-nirmal-cream flex items-center justify-center font-serif font-bold shrink-0">
+                <div className="w-10 h-10 rounded-full bg-nirmal-maroon text-nirmal-cream flex items-center justify-center font-serif font-semibold shrink-0">
                   {t.initial}
                 </div>
                 <div>

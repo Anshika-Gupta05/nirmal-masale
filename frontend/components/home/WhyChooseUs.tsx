@@ -45,13 +45,13 @@ const POINTS = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-16 md:py-20 bg-white border-y border-nirmal-maroon/10">
+    <section className="py-16 md:py-20 bg-surface border-y border-nirmal-maroon/10">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
             Why Nirmal Masale
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-nirmal-dark">
+          <h2 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark">
             Why Choose Us?
           </h2>
         </div>
@@ -62,7 +62,7 @@ export default function WhyChooseUs() {
               <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-nirmal-gold/15 text-nirmal-maroon flex items-center justify-center rotate-3 hover:rotate-0 transition-transform">
                 {point.icon}
               </div>
-              <h3 className="font-serif text-lg font-bold text-nirmal-dark mb-2">{point.title}</h3>
+              <h3 className="font-serif text-lg font-semibold text-nirmal-dark mb-2">{point.title}</h3>
               <p className="text-sm text-nirmal-dark/65 leading-relaxed">{point.desc}</p>
             </div>
           ))}

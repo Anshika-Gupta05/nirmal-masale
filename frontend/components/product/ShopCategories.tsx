@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from './ProductCard';
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'name-asc';
@@ -19,15 +20,36 @@ export default function ShopCategories({
   products: any[];
   initialCategory?: string;
 }) {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category');
+  const priceParam = searchParams.get('price');
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory !== 'All' ? [initialCategory] : []
+    categoryParam ? [categoryParam] : initialCategory !== 'All' ? [initialCategory] : []
   );
-  const [selectedPriceBuckets, setSelectedPriceBuckets] = useState<string[]>([]);
+  const [selectedPriceBuckets, setSelectedPriceBuckets] = useState<string[]>(
+    priceParam ? [priceParam] : []
+  );
   const [selectedWeights, setSelectedWeights] = useState<string[]>([]);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortOption>('featured');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [mobileSortOpen, setMobileSortOpen] = useState(false);
+
+  // Synchronize filter states whenever URL search parameters change
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategories([categoryParam]);
+    } else if (initialCategory === 'All') {
+      setSelectedCategories([]);
+    }
+
+    if (priceParam) {
+      setSelectedPriceBuckets([priceParam]);
+    } else {
+      setSelectedPriceBuckets([]);
+    }
+  }, [categoryParam, priceParam, initialCategory]);
 
   const lowestPrice = (p: any) =>
     p.sizes && p.sizes.length > 0 ? Math.min(...p.sizes.map((s: any) => s.price)) : 0;
@@ -76,7 +98,8 @@ export default function ShopCategories({
       result = result.filter((p) => {
         const price = lowestPrice(p);
         return selectedPriceBuckets.some((label) => {
-          const bucket = PRICE_BUCKETS.find((b) => b.label === label)!;
+          const bucket = PRICE_BUCKETS.find((b) => b.label === label);
+          if (!bucket) return false; // Safe fallback preventing undefined .min reads
           return price >= bucket.min && price < bucket.max;
         });
       });
@@ -108,11 +131,10 @@ export default function ShopCategories({
     'name-asc': 'Name: A to Z',
   };
 
-  // --- Reusable filter panel (shared by desktop sidebar + mobile sheet) ---
   const FilterPanel = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="font-serif font-bold text-nirmal-dark text-lg">Filters</h3>
+        <h3 className="font-serif font-semibold text-nirmal-dark text-lg">Filters</h3>
         {activeFilterCount > 0 && (
           <button onClick={clearAll} className="text-xs font-semibold text-nirmal-cta hover:underline">
             Clear All
@@ -175,7 +197,7 @@ export default function ShopCategories({
                   onClick={() => toggle(selectedWeights, w, setSelectedWeights)}
                   className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
                     selectedWeights.includes(w)
-                      ? 'bg-nirmal-maroon text-white border-nirmal-maroon'
+                      ? 'bg-nirmal-maroon text-ink border-nirmal-maroon'
                       : 'bg-transparent text-nirmal-dark border-nirmal-dark/20 hover:border-nirmal-maroon'
                   }`}
                 >
@@ -191,10 +213,9 @@ export default function ShopCategories({
 
   return (
     <div className="grid lg:grid-cols-[240px_1fr] gap-8">
-
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block">
-        <div className="sticky top-24 bg-white border border-nirmal-dark/10 rounded-2xl p-6">
+        <div className="sticky top-24 bg-surface border border-nirmal-dark/10 rounded-2xl p-6">
           <FilterPanel />
         </div>
       </aside>
@@ -211,11 +232,11 @@ export default function ShopCategories({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for a spice, e.g. Garam Masala..."
-            className="w-full border border-nirmal-dark/15 rounded-xl pl-10 pr-4 py-3 bg-white text-sm focus:outline-none focus:border-nirmal-maroon shadow-sm"
+            className="w-full border border-nirmal-dark/15 rounded-xl pl-10 pr-4 py-3 bg-surface text-sm focus:outline-none focus:border-nirmal-maroon shadow-sm"
           />
         </div>
 
-        {/* Top bar: count + desktop sort */}
+        {/* Top bar */}
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-nirmal-dark/60">
             <span className="font-bold text-nirmal-dark">{filteredProducts.length}</span> Products
@@ -223,7 +244,7 @@ export default function ShopCategories({
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="hidden sm:block border border-nirmal-dark/15 rounded-xl px-4 py-2.5 bg-white text-sm text-nirmal-dark focus:outline-none focus:border-nirmal-maroon shadow-sm cursor-pointer"
+            className="hidden sm:block border border-nirmal-dark/15 rounded-xl px-4 py-2.5 bg-surface text-sm text-nirmal-dark focus:outline-none focus:border-nirmal-maroon shadow-sm cursor-pointer"
             aria-label="Sort products"
           >
             <option value="featured">Sort: Featured</option>
@@ -257,7 +278,7 @@ export default function ShopCategories({
           </div>
         )}
 
-        {/* Product Grid — Myntra-style density, all cards equal height */}
+        {/* Product Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 pb-24 lg:pb-0 items-stretch">
           {filteredProducts.map((product: any, index: number) => (
             <div key={`${product.id}-${index}`} className="h-full animate-fade-up" style={{ animationDelay: `${(index % 8) * 50}ms` }}>
@@ -285,7 +306,7 @@ export default function ShopCategories({
       </div>
 
       {/* Mobile sticky Filter/Sort bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-nirmal-dark/10 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] grid grid-cols-2 divide-x divide-nirmal-dark/10">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-nirmal-dark/10 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] grid grid-cols-2 divide-x divide-nirmal-dark/10">
         <button
           onClick={() => setMobileFilterOpen(true)}
           className="flex items-center justify-center gap-2 py-4 text-sm font-semibold text-nirmal-dark"
@@ -305,7 +326,7 @@ export default function ShopCategories({
       {/* Mobile Filter Bottom Sheet */}
       <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${mobileFilterOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 bg-black/50" onClick={() => setMobileFilterOpen(false)} />
-        <div className={`absolute bottom-0 inset-x-0 bg-white rounded-t-2xl max-h-[80vh] overflow-y-auto transition-transform duration-300 ${mobileFilterOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-2xl max-h-[80vh] overflow-y-auto transition-transform duration-300 ${mobileFilterOpen ? 'translate-y-0' : 'translate-y-full'}`}>
           <div className="p-6">
             <div className="flex justify-end mb-2">
               <button onClick={() => setMobileFilterOpen(false)} className="text-nirmal-dark/50 text-xl leading-none p-1" aria-label="Close filters">&times;</button>
@@ -324,9 +345,9 @@ export default function ShopCategories({
       {/* Mobile Sort Bottom Sheet */}
       <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${mobileSortOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSortOpen(false)} />
-        <div className={`absolute bottom-0 inset-x-0 bg-white rounded-t-2xl transition-transform duration-300 ${mobileSortOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-2xl transition-transform duration-300 ${mobileSortOpen ? 'translate-y-0' : 'translate-y-full'}`}>
           <div className="p-6">
-            <h3 className="font-serif font-bold text-lg text-nirmal-dark mb-4">Sort By</h3>
+            <h3 className="font-serif font-semibold text-lg text-nirmal-dark mb-4">Sort By</h3>
             {(Object.keys(sortLabel) as SortOption[]).map((key) => (
               <button
                 key={key}

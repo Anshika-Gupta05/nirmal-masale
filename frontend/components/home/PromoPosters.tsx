@@ -53,7 +53,6 @@ export default function PromoPosters() {
             >
               {/* Decorative curved shape */}
               <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/10" />
-              <div className="absolute inset-0 opacity-[0.07] bg-spice-dots" />
 
               {/* Badge */}
               <span className={`relative z-10 inline-block w-fit ${poster.badge} text-[11px] px-3 py-1.5 rounded-full uppercase tracking-wider font-bold`}>

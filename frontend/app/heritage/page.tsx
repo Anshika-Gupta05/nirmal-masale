@@ -17,7 +17,7 @@ export default function HeritagePage() {
           <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-3 block">
             The Story of Purity
           </span>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl font-semibold mb-4">
             A Quarter Century of Uncompromising Quality
           </h1>
           <p className="text-nirmal-dark/70 leading-relaxed">
@@ -27,11 +27,11 @@ export default function HeritagePage() {
       </section>
 
       {/* Stats Row */}
-      <section className="bg-white border-b border-nirmal-maroon/10">
+      <section className="bg-surface border-b border-nirmal-maroon/10">
         <div className="container mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-6">
           {STATS.map((stat) => (
             <div key={stat.label} className="text-center">
-              <p className="font-serif text-3xl md:text-4xl font-bold text-nirmal-maroon">{stat.value}</p>
+              <p className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-maroon">{stat.value}</p>
               <p className="text-xs text-nirmal-dark/60 mt-1">{stat.label}</p>
             </div>
           ))}
@@ -42,12 +42,12 @@ export default function HeritagePage() {
       <HeritageSection />
 
       {/* Our Craft — Product Range */}
-      <section className="py-20 bg-white border-b border-nirmal-maroon/10">
+      <section className="py-20 bg-surface border-b border-nirmal-maroon/10">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-3 block">
             Our Craft
           </span>
-          <h2 className="font-serif text-3xl font-bold text-nirmal-dark mb-6">
+          <h2 className="font-serif text-3xl font-semibold text-nirmal-dark mb-6">
             Traditional Technique, Modern Precision
           </h2>
           <p className="text-nirmal-dark/80 leading-relaxed text-lg mb-12">
@@ -55,35 +55,35 @@ export default function HeritagePage() {
           </p>
 
           <div className="grid sm:grid-cols-3 gap-6 text-left">
-            <div className="bg-[#FBF3E7] p-6 rounded-xl border border-nirmal-maroon/10">
+            <div className="bg-surface-2 p-6 rounded-xl border border-gold/20">
               <div className="w-12 h-12 rounded-full bg-nirmal-maroon/10 text-nirmal-maroon flex items-center justify-center mb-4">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="9" /><path d="M12 8v4l3 2" />
                 </svg>
               </div>
-              <h3 className="font-serif text-lg font-bold text-nirmal-dark mb-1.5">Grounded Spices</h3>
+              <h3 className="font-serif text-lg font-semibold text-nirmal-dark mb-1.5">Grounded Spices</h3>
               <p className="text-sm text-nirmal-dark/70">
                 Stone-ground powders like turmeric, chilli, and coriander — processed at low heat to protect natural oils and colour.
               </p>
             </div>
-            <div className="bg-[#FBF3E7] p-6 rounded-xl border border-nirmal-maroon/10">
+            <div className="bg-surface-2 p-6 rounded-xl border border-gold/20">
               <div className="w-12 h-12 rounded-full bg-nirmal-maroon/10 text-nirmal-maroon flex items-center justify-center mb-4">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 12h18" /><path d="M5 12a7 7 0 0 1 14 0" /><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6" />
                 </svg>
               </div>
-              <h3 className="font-serif text-lg font-bold text-nirmal-dark mb-1.5">Blended Masalas</h3>
+              <h3 className="font-serif text-lg font-semibold text-nirmal-dark mb-1.5">Blended Masalas</h3>
               <p className="text-sm text-nirmal-dark/70">
                 Carefully balanced spice blends like garam masala and chana masala, true to authentic Indian cooking.
               </p>
             </div>
-            <div className="bg-[#FBF3E7] p-6 rounded-xl border border-nirmal-maroon/10">
+            <div className="bg-surface-2 p-6 rounded-xl border border-gold/20">
               <div className="w-12 h-12 rounded-full bg-nirmal-maroon/10 text-nirmal-maroon flex items-center justify-center mb-4">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2c4 3 6 6.5 6 10a6 6 0 0 1-12 0c0-3.5 2-7 6-10Z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-lg font-bold text-nirmal-dark mb-1.5">Whole Seeds</h3>
+              <h3 className="font-serif text-lg font-semibold text-nirmal-dark mb-1.5">Whole Seeds</h3>
               <p className="text-sm text-nirmal-dark/70">
                 Farm-fresh whole spices and seeds, cleaned and graded for freshness that lasts.
               </p>
@@ -94,33 +94,33 @@ export default function HeritagePage() {
 
       {/* Additional Quality Promise Section */}
       <section className="py-20 container mx-auto px-6 max-w-4xl text-center">
-        <h2 className="font-serif text-3xl font-bold text-nirmal-dark mb-6">
+        <h2 className="font-serif text-3xl font-semibold text-nirmal-dark mb-6">
           The Commitment to Clean Processing
         </h2>
         <p className="text-nirmal-dark/80 leading-relaxed text-lg mb-8">
           We believe that real taste comes from preserving the natural oils of the spice. By combining strict hygienic packaging standards with time-tested stone-grinding principles, we ensure that what reaches your kitchen retains its authentic aroma and purity.
         </p>
         <div className="grid md:grid-cols-2 gap-8 text-left mt-12">
-          <div className="bg-white p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="font-serif text-xl font-bold text-nirmal-maroon mb-2">Sourced with Care</h3>
+          <div className="bg-surface p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="font-serif text-xl font-semibold text-nirmal-maroon mb-2">Sourced with Care</h3>
             <p className="text-sm text-nirmal-dark/70">
               Raw spices are selected directly from prime agricultural regions, ensuring only the finest harvest makes the cut.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="font-serif text-xl font-bold text-nirmal-maroon mb-2">Hygienic Packaging</h3>
+          <div className="bg-surface p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="font-serif text-xl font-semibold text-nirmal-maroon mb-2">Hygienic Packaging</h3>
             <p className="text-sm text-nirmal-dark/70">
               Every batch is sealed securely in food-grade pouches to protect against moisture and preserve absolute freshness.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="font-serif text-xl font-bold text-nirmal-maroon mb-2">Traditional Stone-Grinding</h3>
+          <div className="bg-surface p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="font-serif text-xl font-semibold text-nirmal-maroon mb-2">Traditional Stone-Grinding</h3>
             <p className="text-sm text-nirmal-dark/70">
               Low-heat grinding methods protect the essential oils that give each spice its signature aroma and depth.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="font-serif text-xl font-bold text-nirmal-maroon mb-2">Rooted in Uttarakhand</h3>
+          <div className="bg-surface p-6 rounded-xl border border-nirmal-maroon/10 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="font-serif text-xl font-semibold text-nirmal-maroon mb-2">Rooted in Uttarakhand</h3>
             <p className="text-sm text-nirmal-dark/70">
               Proudly based in Dehradun, we bring the authentic flavours of the region to kitchens across the country.
             </p>

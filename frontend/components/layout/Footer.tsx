@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-nirmal-cream text-nirmal-dark mt-auto border-t-4 border-nirmal-maroon">
       {/* Trust strip */}
-      <div className="bg-white border-b border-nirmal-maroon/10">
+      <div className="bg-surface border-b border-nirmal-maroon/10">
         <div className="container mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
             { title: 'Free Delivery', sub: 'On orders above ₹300' },
@@ -14,7 +14,7 @@ export default function Footer() {
             { title: 'Trusted Since 2001', sub: 'Loved by lakhs of homes' },
           ].map((item) => (
             <div key={item.title}>
-              <p className="text-sm font-serif font-bold text-nirmal-maroon">{item.title}</p>
+              <p className="text-sm font-serif font-semibold text-nirmal-maroon">{item.title}</p>
               <p className="text-xs text-nirmal-dark/50 mt-0.5">{item.sub}</p>
             </div>
           ))}
@@ -50,7 +50,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h3 className="font-serif font-bold text-nirmal-maroon mb-4">Quick Links</h3>
+          <h3 className="font-serif font-semibold text-nirmal-maroon mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm text-nirmal-dark/70">
             <li><Link href="/shop" className="hover:text-nirmal-maroon transition-colors">Shop</Link></li>
             <li><Link href="/heritage" className="hover:text-nirmal-maroon transition-colors">Our Heritage</Link></li>
@@ -61,7 +61,7 @@ export default function Footer() {
 
         {/* Categories */}
         <div>
-          <h3 className="font-serif font-bold text-nirmal-maroon mb-4">Categories</h3>
+          <h3 className="font-serif font-semibold text-nirmal-maroon mb-4">Categories</h3>
           <ul className="space-y-2 text-sm text-nirmal-dark/70">
             <li><Link href="/shop?category=Blended%20Spices" className="hover:text-nirmal-maroon transition-colors">Blended Spices</Link></li>
             <li><Link href="/shop?category=Ground%20Spices" className="hover:text-nirmal-maroon transition-colors">Ground Spices</Link></li>
@@ -72,7 +72,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h3 className="font-serif font-bold text-nirmal-maroon mb-4">Contact Us</h3>
+          <h3 className="font-serif font-semibold text-nirmal-maroon mb-4">Contact Us</h3>
           <ul className="space-y-2 text-sm text-nirmal-dark/70">
             <li>
               <a href="mailto:support@nirmalmasale.in" className="hover:text-nirmal-maroon transition-colors">

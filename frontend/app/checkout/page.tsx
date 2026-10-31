@@ -105,18 +105,18 @@ export default function CheckoutPage() {
   if (orderNumber) {
     return (
       <div className="container mx-auto px-6 py-24 text-center max-w-lg">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 rounded-full bg-emerald-500/15 text-emerald-300 flex items-center justify-center mx-auto mb-6">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m20 6-11 11-5-5" />
           </svg>
         </div>
-        <h1 className="font-serif text-3xl font-bold text-nirmal-dark mb-3">Order Placed Successfully!</h1>
+        <h1 className="font-serif text-3xl font-semibold text-nirmal-dark mb-3">Order Placed Successfully!</h1>
         <p className="text-nirmal-dark/70 mb-6">
           Thank you for shopping with Nirmal Masale. Your spices are being prepared with care.
         </p>
-        <div className="bg-white border border-nirmal-gold/40 rounded-2xl p-6 mb-8">
+        <div className="bg-surface border border-nirmal-gold/40 rounded-2xl p-6 mb-8">
           <p className="text-xs uppercase text-nirmal-dark/50 font-semibold mb-1">Your Tracking Number</p>
-          <p className="font-serif text-2xl font-bold text-nirmal-maroon tracking-wide">{orderNumber}</p>
+          <p className="font-serif text-2xl font-semibold text-nirmal-maroon tracking-wide">{orderNumber}</p>
           <p className="text-xs text-nirmal-dark/50 mt-2">Save this number to track your order status anytime.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
   if (cartCount === 0) {
     return (
       <div className="container mx-auto px-6 py-24 text-center max-w-lg">
-        <h1 className="font-serif text-3xl font-bold text-nirmal-dark mb-4">Your Cart is Empty</h1>
+        <h1 className="font-serif text-3xl font-semibold text-nirmal-dark mb-4">Your Cart is Empty</h1>
         <p className="text-nirmal-dark/70 mb-8">You need to add some spices to your cart before you can checkout.</p>
         <Link href="/shop" className="bg-nirmal-maroon text-nirmal-cream px-8 py-3 rounded-xl font-semibold hover:bg-nirmal-maroon-dark transition-all">
           Return to Shop
@@ -145,18 +145,18 @@ export default function CheckoutPage() {
   }
 
   const inputClass = (hasError?: string) =>
-    `w-full border rounded-xl px-4 py-3 bg-[#f9f0e6]/30 focus:outline-none focus:border-nirmal-maroon transition-colors ${
-      hasError ? 'border-red-400' : 'border-nirmal-dark/20'
+    `w-full border rounded-xl px-4 py-3 bg-ink/60 text-ivory placeholder:text-ivory-muted/50 focus:outline-none focus:border-nirmal-maroon transition-colors ${
+      hasError ? 'border-red-400' : 'border-gold/30'
     }`;
 
   return (
     <div className="container mx-auto px-6 py-12">
-      <h1 className="font-serif text-3xl md:text-4xl font-bold text-nirmal-dark mb-8">Secure Checkout</h1>
+      <h1 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark mb-8">Secure Checkout</h1>
 
       <div className="grid lg:grid-cols-12 gap-12 items-start">
         {/* Left Side: Shipping Form */}
-        <div className="lg:col-span-7 bg-white p-8 rounded-2xl border border-nirmal-maroon/10 shadow-sm">
-          <h2 className="font-serif text-xl font-bold text-nirmal-maroon mb-6">Shipping Details</h2>
+        <div className="lg:col-span-7 bg-surface p-8 rounded-2xl border border-nirmal-maroon/10 shadow-sm">
+          <h2 className="font-serif text-xl font-semibold text-nirmal-maroon mb-6">Shipping Details</h2>
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('firstName', e.target.value)}
                   className={inputClass(errors.firstName)}
                 />
-                {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
+                {errors.firstName && <p className="text-xs text-red-400 mt-1">{errors.firstName}</p>}
               </div>
               <div>
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Last Name</label>
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('lastName', e.target.value)}
                   className={inputClass(errors.lastName)}
                 />
-                {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
+                {errors.lastName && <p className="text-xs text-red-400 mt-1">{errors.lastName}</p>}
               </div>
             </div>
 
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('email', e.target.value)}
                   className={inputClass(errors.email)}
                 />
-                {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email}</p>}
               </div>
               <div>
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Phone</label>
@@ -201,7 +201,7 @@ export default function CheckoutPage() {
                   placeholder="10-digit mobile number"
                   className={inputClass(errors.phone)}
                 />
-                {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
+                {errors.phone && <p className="text-xs text-red-400 mt-1">{errors.phone}</p>}
               </div>
             </div>
 
@@ -213,7 +213,7 @@ export default function CheckoutPage() {
                 className={inputClass(errors.address)}
                 rows={3}
               />
-              {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address}</p>}
+              {errors.address && <p className="text-xs text-red-400 mt-1">{errors.address}</p>}
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('city', e.target.value)}
                   className={inputClass(errors.city)}
                 />
-                {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
+                {errors.city && <p className="text-xs text-red-400 mt-1">{errors.city}</p>}
               </div>
               <div>
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">State</label>
@@ -235,7 +235,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('state', e.target.value)}
                   className={inputClass(errors.state)}
                 />
-                {errors.state && <p className="text-xs text-red-500 mt-1">{errors.state}</p>}
+                {errors.state && <p className="text-xs text-red-400 mt-1">{errors.state}</p>}
               </div>
               <div>
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Pincode</label>
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
                   onChange={(e) => updateField('pincode', e.target.value)}
                   className={inputClass(errors.pincode)}
                 />
-                {errors.pincode && <p className="text-xs text-red-500 mt-1">{errors.pincode}</p>}
+                {errors.pincode && <p className="text-xs text-red-400 mt-1">{errors.pincode}</p>}
               </div>
             </div>
 
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
             </div>
 
             {submitError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">{submitError}</p>
+              <p className="text-sm text-red-300 bg-red-500/10 border border-red-400/30 rounded-xl p-3">{submitError}</p>
             )}
 
             <button
@@ -294,14 +294,14 @@ export default function CheckoutPage() {
 
         {/* Right Side: Order Summary */}
         <div className="lg:col-span-5 bg-nirmal-cream border border-nirmal-gold/30 p-8 rounded-2xl shadow-sm lg:sticky lg:top-24">
-          <h2 className="font-serif text-xl font-bold text-nirmal-dark mb-6">Order Summary</h2>
+          <h2 className="font-serif text-xl font-semibold text-nirmal-dark mb-6">Order Summary</h2>
 
           <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
             {items.map((item) => (
               <div key={`${item.id}-${item.selectedSize}`} className="flex justify-between items-center text-sm">
                 <div className="flex items-center gap-3">
                   {/* Product Image Box */}
-                  <div className="w-12 h-12 bg-white border border-nirmal-maroon/10 rounded-xl relative flex-shrink-0 flex items-center justify-center overflow-hidden p-1.5">
+                  <div className="w-12 h-12 bg-parchment border border-gold/30 rounded-xl relative flex-shrink-0 flex items-center justify-center overflow-hidden p-1.5">
                     {item.image ? (
                       <Image
                         src={item.image}
@@ -332,7 +332,7 @@ export default function CheckoutPage() {
               <span>Shipping</span>
               <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
             </div>
-            <div className="flex justify-between font-serif text-2xl font-bold text-nirmal-maroon pt-4 border-t border-nirmal-dark/10">
+            <div className="flex justify-between font-serif text-2xl font-semibold text-nirmal-maroon pt-4 border-t border-nirmal-dark/10">
               <span>Total</span>
               <span>₹{total}</span>
             </div>

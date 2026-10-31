@@ -63,8 +63,8 @@ export default function ProductDetailClient({
       <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
 
         {/* Left: Product Image Showcase - PURE WHITE + BLEND MODE */}
-        <div className="relative h-96 lg:h-[500px] bg-white border border-nirmal-maroon/10 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
-          <span className="absolute top-4 left-4 bg-white/90 text-nirmal-maroon text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
+        <div className="relative h-96 lg:h-[500px] bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
+          <span className="absolute top-4 left-4 bg-ink/85 text-gold-soft text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
             {dbProduct.category}
           </span>
           <div className="relative w-full h-full">
@@ -80,7 +80,7 @@ export default function ProductDetailClient({
 
         {/* Right: Product Details & Actions */}
         <div className="flex flex-col">
-          <h1 className="font-serif text-3xl lg:text-4xl font-bold text-nirmal-dark mb-3">
+          <h1 className="font-serif text-3xl lg:text-4xl font-semibold text-nirmal-dark mb-3">
             {dbProduct.name}
           </h1>
 
@@ -88,7 +88,7 @@ export default function ProductDetailClient({
             <span className="text-xs bg-nirmal-gold/20 text-nirmal-dark px-3 py-1 rounded-md font-medium border border-nirmal-gold/30">
               Authentic Recipe
             </span>
-            <span className="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-md font-medium border border-emerald-200">
+            <span className="text-xs bg-emerald-500/10 text-emerald-300 px-3 py-1 rounded-md font-medium border border-emerald-400/30">
               In Stock
             </span>
           </div>
@@ -120,17 +120,17 @@ export default function ProductDetailClient({
           </div>
 
           {/* Price & Quantity Row */}
-          <div className="bg-white p-6 rounded-2xl border border-nirmal-maroon/10 shadow-sm mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="bg-surface p-6 rounded-2xl border border-nirmal-maroon/10 shadow-sm mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs text-nirmal-dark/60 block uppercase font-medium">Total Price</span>
-              <span className="font-serif text-3xl font-bold text-nirmal-maroon">
+              <span className="font-serif text-3xl font-semibold text-nirmal-maroon">
                 ₹{currentSize.price * quantity}
               </span>
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
               {/* Quantity Counter */}
-              <div className="flex items-center border border-nirmal-dark/20 rounded-xl overflow-hidden bg-white">
+              <div className="flex items-center border border-nirmal-dark/20 rounded-xl overflow-hidden bg-surface">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="px-3.5 py-2 text-nirmal-dark hover:bg-nirmal-maroon hover:text-nirmal-cream transition-colors"
@@ -154,7 +154,7 @@ export default function ProductDetailClient({
               <button
                 onClick={handleAddToCart}
                 className={`flex-grow sm:flex-grow-0 font-semibold px-6 py-3 rounded-xl transition-all shadow-md text-sm cursor-pointer ${
-                  justAdded ? 'bg-emerald-600 text-white' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
+                  justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
                 }`}
               >
                 {justAdded ? 'Added to Cart ✓' : 'Add to Cart'}
@@ -165,7 +165,7 @@ export default function ProductDetailClient({
           {/* Trust badges */}
           <div className="grid grid-cols-2 gap-3">
             {TRUST_ITEMS.map((item) => (
-              <div key={item.label} className="flex items-center gap-2 text-xs text-nirmal-dark/70 bg-white px-3 py-2.5 rounded-lg border border-nirmal-maroon/10">
+              <div key={item.label} className="flex items-center gap-2 text-xs text-nirmal-dark/70 bg-surface px-3 py-2.5 rounded-lg border border-nirmal-maroon/10">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="text-nirmal-maroon shrink-0" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m20 6-11 11-5-5" />
                 </svg>
@@ -177,7 +177,7 @@ export default function ProductDetailClient({
       </div>
 
       {/* Tabs Section */}
-      <div className="bg-white border border-nirmal-maroon/10 rounded-2xl p-8 shadow-sm mb-16">
+      <div className="bg-surface border border-nirmal-maroon/10 rounded-2xl p-8 shadow-sm mb-16">
         <div className="flex border-b border-nirmal-dark/10 mb-6 gap-8 overflow-x-auto">
           <button
             onClick={() => setActiveTab('ingredients')}
@@ -221,7 +221,7 @@ export default function ProductDetailClient({
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <div>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-nirmal-dark mb-8">
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-nirmal-dark mb-8">
             You May Also Like
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -243,15 +243,15 @@ export default function ProductDetailClient({
       )}
 
       {/* Sticky mobile add-to-cart bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-nirmal-maroon/10 p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] flex items-center gap-3">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-nirmal-maroon/10 p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-nirmal-dark/50">Total</p>
-          <p className="font-serif text-xl font-bold text-nirmal-maroon truncate">₹{currentSize.price * quantity}</p>
+          <p className="font-serif text-xl font-semibold text-nirmal-maroon truncate">₹{currentSize.price * quantity}</p>
         </div>
         <button
           onClick={handleAddToCart}
           className={`font-semibold px-6 py-3 rounded-xl text-sm shrink-0 transition-colors ${
-            justAdded ? 'bg-emerald-600 text-white' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
+            justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
           }`}
         >
           {justAdded ? 'Added ✓' : 'Add to Cart'}

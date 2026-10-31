@@ -18,154 +18,80 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close the mobile menu on route change and lock scroll while it's open
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
+  useEffect(() => { setIsMenuOpen(false); }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isMenuOpen]);
 
   return (
     <>
-      {/* Trust strip */}
-      <div className="bg-nirmal-maroon text-nirmal-cream text-xs">
-        <div className="container mx-auto px-6 py-2 flex items-center justify-center gap-x-6 gap-y-1 flex-wrap text-center">
-          <span>100% Pure &amp; Stone Ground</span>
-          <span className="opacity-40 hidden sm:inline">|</span>
-          <span>Trusted Since 2001</span>
-          <span className="opacity-40 hidden sm:inline">|</span>
-          <span>Free Delivery Above ₹300</span>
+      {/* Announcement Bar with refined surface color and gold accent */}
+      <div className="bg-surface-2 text-gold-soft text-[11px] tracking-[0.18em] uppercase border-b border-gold/30">
+        <div className="container mx-auto px-6 py-2 text-center font-medium">
+          Free delivery above ₹300 <span className="text-gold mx-2">◆</span> Pure &amp; stone-ground since 2001
         </div>
       </div>
 
-      <header className="sticky top-0 z-40 bg-nirmal-cream/95 backdrop-blur supports-[backdrop-filter]:bg-nirmal-cream/90 border-b border-nirmal-maroon/20">
-        <nav className="container mx-auto px-6 py-2 flex items-center justify-between">
-          {/* Logo Section with proper rectangular dimensions */}
-          <Link href="/" className="flex items-center gap-3 shrink-0">
-            <div className="relative w-32 h-20 sm:w-36 sm:h-24 overflow-hidden flex items-center justify-center">
-              <Image
-                src="/nirmal_gold_masale_logo.png"
-                alt="Nirmal Masale Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+      <header className="sticky top-0 z-40 bg-ink/85 backdrop-blur border-b border-gold/25">
+        <nav className="container mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/" className="relative w-28 h-16 shrink-0" aria-label="Nirmal Gold Masale home">
+            <Image src="/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" fill className="object-contain" priority />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
+          <div className="hidden md:flex items-center gap-10">
+            {NAV_LINKS.map((l) => {
+              const active = pathname === l.href;
               return (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative text-sm font-medium transition-colors ${
-                    isActive ? 'text-nirmal-maroon' : 'text-nirmal-dark hover:text-nirmal-maroon'
-                  }`}
+                  key={l.href}
+                  href={l.href}
+                  className={`relative text-[12px] uppercase tracking-[0.22em] transition-colors py-2 ${active ? 'text-gold-soft' : 'text-ivory/75 hover:text-gold-soft'}`}
                 >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute -bottom-[13px] left-0 right-0 h-0.5 bg-nirmal-gold rounded-full" />
-                  )}
+                  {l.label}
+                  {active && <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-gold" />}
                 </Link>
               );
             })}
           </div>
 
-          {/* Icons/CTA */}
-          <div className="flex items-center gap-1 sm:gap-3">
-            <a
-              href="https://wa.me/918859274835"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Call us"
-              className="hidden lg:flex items-center gap-2 text-sm text-nirmal-dark hover:text-nirmal-maroon transition-colors mr-2"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
-              </svg>
-              +91 8859274835
-            </a>
-
+          <div className="flex items-center gap-2">
             <button
               onClick={openDrawer}
-              className="relative p-2 flex items-center gap-2 text-nirmal-dark hover:text-nirmal-maroon transition-colors font-medium"
-              aria-label="Open cart"
+              aria-label={`Open cart, ${cartCount} items`}
+              className="relative p-2 text-ivory hover:text-gold-soft transition-colors"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                <path d="M3 6h18" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 8h14l-1 12H6L5 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" />
               </svg>
-              {/* Dynamic Cart Badge */}
               {cartCount > 0 && (
-                <span key={cartCount} className="absolute -top-1 -right-1 bg-nirmal-cta text-nirmal-cream text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-sm animate-pop">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-soft text-ink text-[10px] font-bold flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </button>
-
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMenuOpen((v) => !v)}
-              className="md:hidden p-2 text-nirmal-dark hover:text-nirmal-maroon relative w-9 h-9 flex items-center justify-center"
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
+              className="md:hidden p-2 text-ivory"
             >
-              <span
-                className={`absolute h-0.5 w-6 bg-current rounded-full transition-all duration-300 ${
-                  isMenuOpen ? 'rotate-45' : '-translate-y-1.5'
-                }`}
-              />
-              <span
-                className={`absolute h-0.5 w-6 bg-current rounded-full transition-all duration-300 ${
-                  isMenuOpen ? 'opacity-0' : 'opacity-100'
-                }`}
-              />
-              <span
-                className={`absolute h-0.5 w-6 bg-current rounded-full transition-all duration-300 ${
-                  isMenuOpen ? '-rotate-45' : 'translate-y-1.5'
-                }`}
-              />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                {isMenuOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 8h16M4 16h16" />}
+              </svg>
             </button>
           </div>
         </nav>
 
-        {/* Mobile Menu Panel */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-nirmal-maroon/10 ${
-            isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <div className="container mx-auto px-6 py-4 flex flex-col gap-1 bg-nirmal-cream">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`py-3 text-base font-medium border-b border-nirmal-dark/5 last:border-0 ${
-                  pathname === link.href ? 'text-nirmal-maroon' : 'text-nirmal-dark'
-                }`}
-              >
-                {link.label}
+        {isMenuOpen && (
+          <div className="md:hidden fixed inset-x-0 top-[calc(2rem+5rem)] bottom-0 bg-ink z-50 px-8 py-10 flex flex-col gap-6 border-t border-gold/25">
+            {NAV_LINKS.map((l) => (
+              <Link key={l.href} href={l.href} className="font-serif text-4xl text-ivory hover:text-gold-soft">
+                {l.label}
               </Link>
             ))}
-            <a
-              href="https://wa.me/918859274835"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-2 bg-nirmal-maroon text-nirmal-cream font-semibold py-3 rounded-xl"
-            >
-              Chat With Us
-            </a>
           </div>
-        </div>
+        )}
       </header>
     </>
   );

@@ -54,7 +54,7 @@ export default function CategoryTiles() {
         <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
           Shop By Category
         </span>
-        <h2 className="font-serif text-3xl md:text-4xl font-bold text-nirmal-dark">
+        <h2 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark">
           More Spices, More Flavour
         </h2>
       </div>
@@ -64,12 +64,12 @@ export default function CategoryTiles() {
           <Link
             key={cat.name}
             href={cat.href}
-            className="group bg-white border border-nirmal-maroon/10 rounded-2xl p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-nirmal-gold/50 transition-all duration-300"
+            className="group bg-surface border border-nirmal-maroon/10 rounded-2xl p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-nirmal-gold/50 transition-all duration-300"
           >
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-nirmal-maroon/10 text-nirmal-maroon flex items-center justify-center group-hover:bg-nirmal-maroon group-hover:text-nirmal-cream transition-colors duration-300">
               {cat.icon}
             </div>
-            <h3 className="font-serif font-bold text-nirmal-dark mb-1 text-sm md:text-base">{cat.name}</h3>
+            <h3 className="font-serif font-semibold text-nirmal-dark mb-1 text-sm md:text-base">{cat.name}</h3>
             <p className="text-xs text-nirmal-dark/60 hidden sm:block">{cat.tagline}</p>
           </Link>
         ))}

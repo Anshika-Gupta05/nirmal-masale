@@ -2,34 +2,40 @@
 
 @theme {
   /* ============================================================
-     NIRMAL MASALE — FINAL BRAND PALETTE
-     Sampled directly from the logo badge and product packaging,
-     then tuned for on-screen contrast. Roughly a 55/25/10/10 split.
+     NIRMAL GOLD — "DARK HERITAGE" (dark theme only)
+     Ink / warm brown / antique gold / ivory (no red fills). Gold only for hairlines,
+     small labels, prices and primary buttons.
+     Legacy --color-nirmal-* names are remapped to the dark palette so
+     components not yet redesigned still render correctly on dark.
      ============================================================ */
 
-  /* BASE (~55%) — page bg, cards, nav surfaces */
-  --color-nirmal-cream: #FBF3E7;        /* warm cardamom-cream, not pure white */
-  --color-nirmal-cream-deep: #F3E6D3;   /* secondary surface tint, section banding */
+  /* New semantic tokens */
+  --color-ink: #1A100C;
+  --color-surface: #241711;
+  --color-surface-2: #2E1E16;
+  --color-oxblood: #5E1A17;
+  --color-gold: #B8924A;
+  --color-gold-soft: #D9B872;
+  --color-ivory: #F3E9D6;
+  --color-ivory-muted: #B9A992;
+  --color-parchment: #F6EFE2;
 
-  /* PRIMARY / BRAND (~25%) — header, footer, hero, headings, nav */
-  --color-nirmal-maroon: #7A2420;       /* sampled from logo badge (avg #86312F), deepened */
-  --color-nirmal-maroon-light: #9C3A32;
-  --color-nirmal-maroon-dark: #4E1613;
-
-  /* ACTION (~10%) — Add to Cart / Buy Now / Checkout ONLY, never decorative */
-  --color-nirmal-cta: #D62828;          /* sampled from chilli-pouch red (#DC1E1E) */
-  --color-nirmal-cta-hover: #B81E1E;
-
-  /* ACCENTS (~10%) — badges, dividers, prices, "since 2001" marks */
-  --color-nirmal-gold: #D4AF37;         /* metallic gold, sampled from logo border/ribbon */
-  --color-nirmal-turmeric: #E9A611;     /* sampled from turmeric pouch (#F0A000), tags/highlights */
-
-  /* TEXT */
-  --color-nirmal-dark: #2B1B14;         /* warm near-black, replaces neutral gray */
-  --color-nirmal-dark-soft: #5C4A3D;
+  /* Legacy names -> dark equivalents */
+  --color-nirmal-cream: #1A100C;
+  --color-nirmal-cream-deep: #241711;
+  --color-nirmal-maroon: #D9B872;        /* now the readable accent / gold fill */
+  --color-nirmal-maroon-light: #E6C98B;
+  --color-nirmal-maroon-dark: #B8924A;   /* hover shade of gold buttons */
+  --color-nirmal-cta: #D9B872;           /* gold button, ink text */
+  --color-nirmal-cta-hover: #E8CB8C;
+  --color-nirmal-gold: #B8924A;
+  --color-nirmal-turmeric: #D9B872;
+  --color-nirmal-dark: #F3E9D6;          /* main text = ivory */
+  --color-nirmal-dark-soft: #B9A992;
+  --color-white: #FFFFFF;
 
   /* Brand Fonts */
-  --font-serif: var(--font-playfair);
+  --font-serif: var(--font-display);
   --font-sans: var(--font-inter);
 
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both;
@@ -73,6 +79,8 @@
 
 html {
   scrollbar-gutter: stable;
+  color-scheme: dark;
+  background: #1A100C;
 }
 
 body {
@@ -87,7 +95,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ::selection {
   background-color: var(--color-nirmal-gold);
-  color: var(--color-nirmal-maroon-dark);
+  color: var(--color-ink);
 }
 
 ::-webkit-scrollbar {
@@ -123,11 +131,6 @@ select:focus-visible {
   overflow: hidden;
 }
 
-.bg-spice-dots {
-  background-image: radial-gradient(#D4AF37 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -156,3 +159,17 @@ select:focus-visible {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Display window: poster PNGs have solid white backgrounds, so multiply
+   them onto a warm parchment panel (reads like a lit shelf on the dark page). */
+.stage {
+  background: radial-gradient(ellipse at 50% 85%, #FBF6EA 0%, #F1E6D0 100%);
+  border: 1px solid rgba(184,146,74,0.55);
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8), inset 0 0 0 6px #1A100C, inset 0 0 0 7px rgba(184,146,74,0.35);
+}
+.stage img { mix-blend-mode: multiply; }
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--color-gold-soft); font-weight: 600;
+}
+.hairline { height: 1px; background: linear-gradient(90deg, transparent, rgba(184,146,74,0.6), transparent); }

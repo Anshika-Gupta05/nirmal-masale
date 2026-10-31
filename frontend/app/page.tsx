@@ -1,161 +1,202 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import HeritageSection from '@/components/heritage/HeritageSection';
 import ProductCard from '@/components/product/ProductCard';
-import CategoryTiles from '@/components/home/CategoryTiles';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
 import Testimonials from '@/components/home/Testimonials';
 import Newsletter from '@/components/home/Newsletter';
-import MarqueeTicker from '@/components/home/MarqueeTicker';
 import ScrollReveal from '@/components/shared/ScrollReveal';
-import Link from 'next/link';
 import { apiUrl } from '@/lib/api';
 
-// Fetch data directly from your FastAPI backend
 async function getFeaturedProducts() {
   try {
     const res = await fetch(apiUrl('/api/products'), { cache: 'no-store' });
     if (!res.ok) return [];
     const data = await res.json();
-    // Grab the first 3 products to feature on the homepage
-    return data.status === 'success' ? data.data.slice(0, 3) : [];
+    return data.status === 'success' ? data.data.slice(0, 4) : [];
   } catch (error) {
-    console.error("Failed to fetch featured products:", error);
+    console.error('Failed to fetch featured products:', error);
     return [];
   }
 }
 
-const TRUST_BADGES = [
+const TRUST = [
   { label: '100% Pure', sub: 'No fillers, no artificial colour' },
-  { label: 'Stone-Ground', sub: 'Traditional grinding, retained oils' },
+  { label: 'Stone-Ground', sub: 'Slow grinding keeps the oils' },
   { label: 'Since 2001', sub: 'Two decades of trust' },
   { label: 'Free Delivery', sub: 'On orders above ₹300' },
 ];
 
+// One tile per shop category. Images live in /public/posters/<img>.webp
+const COLLECTIONS = [
+  { img: 'blended_spices', title: 'Blended Spices', sub: 'Garam, chat, chana, biryani and more ready-made masalas', href: '/shop?category=Blended%20Spices' },
+  { img: 'ground_spices', title: 'Ground Spices', sub: 'Haldi, mirch, coriander, jeera, amchur and more', href: '/shop?category=Ground%20Spices' },
+  { img: 'speciality_essentials', title: 'Specialty Essentials', sub: 'Kasuri methi, salts, saunf, besan, poha and more', href: '/shop?category=Specialty%20Essentials' },
+  { img: 'whole_spices_and_seeds', title: 'Whole Spices & Seeds', sub: 'Jeera, ajwain and other whole seeds', href: '/shop?category=Whole%20Spices%20%26%20Seeds' },
+];
+
+// Every poster tile uses the exact same frame (5:2), so all images display at an identical size.
+function Stage({ img, alt, priority = false, sizes }: { img: string; alt: string; priority?: boolean; sizes: string }) {
+  return (
+    <div className="stage relative w-full aspect-[5/2] overflow-hidden">
+      <Image src={`/posters/${img}.webp`} alt={alt} fill sizes={sizes} priority={priority} className="object-contain" />
+    </div>
+  );
+}
+
+function Showcase({ img, alt, priority = false }: { img: string; alt: string; priority?: boolean }) {
+  return (
+    <div className="relative">
+      <div className="absolute inset-x-[8%] top-[10%] bottom-0 bg-[radial-gradient(ellipse_60%_55%_at_50%_55%,rgba(184,146,74,0.28),rgba(184,146,74,0.10)_55%,transparent_75%)] blur-2xl" />
+      <Image
+        src={`/posters/${img}.webp`}
+        alt={alt}
+        width={2000}
+        height={782}
+        sizes="(min-width:1280px) 1152px, 100vw"
+        priority={priority}
+        className="relative w-full h-auto"
+        style={{
+          maskImage: 'linear-gradient(to bottom, #000 88%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, #000 88%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in',
+        }}
+      />
+    </div>
+  );
+}
+
 export default async function Home() {
   const dbProducts = await getFeaturedProducts();
-
-  // Format the database records to match the updated grouped sizes structure
-  const featuredProducts = dbProducts.map((product: any) => ({
-    id: String(product.id),
-    name: product.name,
-    category: product.category,
-    slug: product.slug,
-    image: product.image_url,
-    sizes: product.sizes || [{ weight: product.weight || 'Standard', price: product.price || 0 }],
+  const featured = dbProducts.map((p: any) => ({
+    id: String(p.id),
+    name: p.name,
+    category: p.category,
+    slug: p.slug,
+    image: p.image_url,
+    sizes: p.sizes || [{ weight: p.weight || 'Standard', price: p.price || 0 }],
   }));
 
   return (
     <div className="flex flex-col flex-grow">
-
-      {/* Hero Section */}
-      <section className="relative bg-nirmal-maroon text-nirmal-cream py-24 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-spice-dots" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-nirmal-gold/10 blur-3xl animate-float" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-nirmal-turmeric/10 blur-3xl animate-float" style={{ animationDelay: '1.2s' }} />
-
-        <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
-          <span className="bg-nirmal-gold text-nirmal-maroon-dark text-xs px-4 py-1.5 rounded-full uppercase tracking-widest font-semibold inline-block mb-6 animate-fade-up">
-            100% Pure &amp; Stone Ground
-          </span>
-
-          <h1 className="font-serif text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-up" style={{ animationDelay: '100ms' }}>
-            Bring Royal Aroma &amp; Authentic Taste to Your Kitchen
-          </h1>
-
-          <p className="text-lg md:text-xl text-nirmal-cream/80 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '180ms' }}>
-            Crafted with passion since 2001. Experience the purity of traditional spices sourced directly from the finest origins and packed with care in Dehradun.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '260ms' }}>
-            <Link
-              href="/shop"
-              className="w-full sm:w-auto bg-nirmal-cta text-nirmal-cream font-semibold px-8 py-4 rounded-xl hover:bg-nirmal-cta-hover hover:-translate-y-0.5 transition-all shadow-lg text-center"
-            >
-              Explore Shop
-            </Link>
-            <Link
-              href="/heritage"
-              className="w-full sm:w-auto border border-nirmal-cream/30 text-nirmal-cream font-semibold px-8 py-4 rounded-xl hover:bg-nirmal-cream/10 transition-all text-center"
-            >
-              Our 2001 Legacy
-            </Link>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-ink pt-20 md:pt-28 pb-16 md:pb-24">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(184,146,74,0.16),transparent_70%)]" />
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <p className="eyebrow mb-6 animate-fade-up">Dehradun <span className="mx-2 text-gold">◆</span> Since 2001</p>
+            <h1 className="font-serif font-medium text-5xl md:text-7xl leading-[1.05] text-ivory animate-fade-up" style={{ animationDelay: '100ms' }}>
+              Royal aroma, <em className="text-gold-soft not-italic">stone-ground</em> to perfection
+            </h1>
+            <p className="mt-6 text-ivory-muted text-lg max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '180ms' }}>
+              Hand-selected, slow-ground and sealed fresh in Dehradun, so every pinch tastes the way it should.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '260ms' }}>
+              <Link href="/shop" className="bg-gold-soft text-ink px-9 py-4 text-[12px] uppercase tracking-[0.22em] font-semibold hover:bg-ivory transition-colors">
+                Shop the collection
+              </Link>
+              <Link href="/heritage" className="border border-gold/60 text-ivory px-9 py-4 text-[12px] uppercase tracking-[0.22em] hover:border-gold-soft hover:text-gold-soft transition-colors">
+                Our story
+              </Link>
+            </div>
+          </div>
+          <div className="mt-14 md:mt-16 max-w-6xl mx-auto animate-fade-up" style={{ animationDelay: '340ms' }}>
+            <Showcase img="showcase-classic" alt="Nirmal Gold Masale boxes and pouches with fresh spices" priority />
           </div>
         </div>
       </section>
 
-      {/* Gold Marquee Ticker */}
-      <MarqueeTicker />
-
-      {/* Trust Badges Strip */}
-      <section className="bg-nirmal-cream border-b border-nirmal-maroon/10">
-        <div className="container mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {TRUST_BADGES.map((badge) => (
-            <div key={badge.label} className="text-center">
-              <p className="font-serif text-nirmal-maroon font-bold text-lg">{badge.label}</p>
-              <p className="text-xs text-nirmal-dark/50 mt-0.5">{badge.sub}</p>
+      {/* Trust strip */}
+      <section className="border-y border-gold/25 bg-surface">
+        <div className="container mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 md:divide-x divide-gold/20">
+          {TRUST.map((t) => (
+            <div key={t.label} className="text-center px-4 py-3">
+              <p className="font-serif text-xl text-gold-soft">{t.label}</p>
+              <p className="text-xs text-ivory-muted mt-1">{t.sub}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Category Tiles */}
-      <ScrollReveal>
-        <CategoryTiles />
-      </ScrollReveal>
-
-      {/* Featured Products Section */}
-      <section className="py-16 md:py-20 container mx-auto px-6">
+      {/* Collections */}
+      <section className="container mx-auto px-6 py-20 md:py-28">
         <ScrollReveal>
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
-          <div>
-            <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
-              Handpicked Quality
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-nirmal-dark">
-              Featured Spices
-            </h2>
+          <div className="text-center mb-14">
+            <p className="eyebrow mb-4">The Collections</p>
+            <h2 className="font-serif font-medium text-4xl md:text-5xl text-ivory">Find your masala</h2>
+            <div className="hairline w-40 mx-auto mt-6" />
           </div>
-          <Link
-            href="/shop"
-            className="mt-4 md:mt-0 text-nirmal-maroon font-semibold hover:underline flex items-center gap-2"
-          >
-            View All Products &rarr;
-          </Link>
-        </div>
         </ScrollReveal>
+        <div className="grid md:grid-cols-2 gap-8 md:gap-10">
+          {COLLECTIONS.map((c, i) => (
+            <ScrollReveal key={c.img} delay={(i % 2) * 120}>
+              <Link href={c.href} className="group block">
+                <Stage img={c.img} alt={c.title} sizes="(min-width:768px) 50vw, 100vw" />
+                <div className="flex items-end justify-between pt-5">
+                  <div>
+                    <h3 className="font-serif text-2xl md:text-3xl text-ivory group-hover:text-gold-soft transition-colors">{c.title}</h3>
+                    <p className="text-sm text-ivory-muted mt-1">{c.sub}</p>
+                  </div>
+                  <span className="text-gold-soft text-[11px] uppercase tracking-[0.22em] whitespace-nowrap ml-4">Explore →</span>
+                </div>
+              </Link>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
 
-        {/* Product Grid - Now Powered by Database! */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-          {featuredProducts.length > 0 ? (
-            featuredProducts.map((product: any, index: number) => (
-              <ScrollReveal key={`${product.id}-${index}`} delay={index * 100} className="h-full">
+      {/* Everyday range band */}
+      <section className="bg-ink bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(94,26,23,0.85),transparent_70%)] border-y border-gold/25">
+        <div className="container mx-auto px-6 py-20 md:py-24 grid lg:grid-cols-12 gap-10 items-center">
+          <ScrollReveal className="lg:col-span-4">
+            <p className="eyebrow mb-4">Everyday Range</p>
+            <h2 className="font-serif font-medium text-4xl md:text-5xl text-ivory leading-tight">Big flavour. <span className="text-gold-soft">₹10</span> a pack.</h2>
+            <p className="text-ivory-muted mt-5 leading-relaxed">
+              Seven kitchen essentials in small, fresh-sealed boxes. Perfect for trying a new masala, or for stocking up for every meal.
+            </p>
+            {/* CHANGE THIS LINK */}
+            <Link href="/shop?price=Under%20%E2%82%B950" className="inline-block mt-8 border border-gold/60 px-8 py-3.5 text-[12px] uppercase tracking-[0.22em] text-ivory hover:border-gold-soft hover:text-gold-soft transition-colors">
+              Shop everyday packs
+            </Link>
+          </ScrollReveal>
+          <ScrollReveal delay={120} className="lg:col-span-8">
+            <Stage img="everyday" alt="Nirmal Gold ₹10 everyday masala boxes" sizes="(min-width:1024px) 66vw, 100vw" />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Featured products */}
+      <section className="container mx-auto px-6 py-20 md:py-28">
+        <ScrollReveal>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <p className="eyebrow mb-3">Handpicked</p>
+              <h2 className="font-serif font-medium text-4xl md:text-5xl text-ivory">Signature spices</h2>
+            </div>
+            <Link href="/shop" className="text-gold-soft text-[12px] uppercase tracking-[0.22em] hover:text-ivory transition-colors">View all →</Link>
+          </div>
+        </ScrollReveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          {featured.length > 0 ? (
+            featured.map((product: any, i: number) => (
+              <ScrollReveal key={`${product.id}-${i}`} delay={i * 100} className="h-full">
                 <ProductCard product={product} />
               </ScrollReveal>
             ))
           ) : (
-            <div className="col-span-full text-center py-16 px-6 bg-white border border-dashed border-nirmal-maroon/20 rounded-2xl text-nirmal-dark/60">
-              <p className="font-serif text-lg mb-1">Spices are on their way to the shelf</p>
-              <p className="text-sm">Couldn&apos;t reach the catalog right now — please check back shortly.</p>
+            <div className="col-span-full text-center py-16 px-6 border border-dashed border-gold/30 text-ivory-muted">
+              <p className="font-serif text-xl mb-1">Spices are on their way to the shelf</p>
+              <p className="text-sm">Couldn&apos;t reach the catalog right now. Please check back shortly.</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <ScrollReveal>
-        <WhyChooseUs />
-      </ScrollReveal>
-
-      {/* Heritage Narrative Section */}
+      <ScrollReveal><WhyChooseUs /></ScrollReveal>
       <HeritageSection />
-
-      {/* Testimonials */}
-      <ScrollReveal>
-        <Testimonials />
-      </ScrollReveal>
-
-      {/* Newsletter / Social CTA */}
+      <ScrollReveal><Testimonials /></ScrollReveal>
       <Newsletter />
-
     </div>
   );
 }

@@ -49,10 +49,10 @@ export default function ProductCard({ product }: { product: ProductProps }) {
   };
 
   return (
-    <div className="h-full bg-white rounded-2xl overflow-hidden border border-nirmal-dark/10 hover:border-nirmal-maroon/30 hover:shadow-lg transition-all duration-300 flex flex-col group relative">
+    <div className="h-full bg-surface rounded-2xl overflow-hidden border border-nirmal-dark/10 hover:border-nirmal-maroon/30 hover:shadow-lg transition-all duration-300 flex flex-col group relative">
 
       {/* Image block — edge to edge, catalog style */}
-      <Link href={`/shop/${product.slug}`} className="relative w-full aspect-[4/5] bg-[#FBF3E7] overflow-hidden block shrink-0">
+      <Link href={`/shop/${product.slug}`} className="relative w-full aspect-[4/5] bg-parchment overflow-hidden block shrink-0">
         <Image
           src={product.image}
           alt={product.name}
@@ -62,7 +62,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
         />
 
         {/* Category tag */}
-        <span className="absolute top-2.5 left-2.5 bg-white/95 text-nirmal-maroon text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-bold z-10 shadow-sm">
+        <span className="absolute top-2.5 left-2.5 bg-ink/85 text-nirmal-maroon text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-bold z-10 shadow-sm">
           {product.category}
         </span>
 
@@ -74,12 +74,12 @@ export default function ProductCard({ product }: { product: ProductProps }) {
             setWishlisted((v) => !v);
           }}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 shadow-sm flex items-center justify-center z-10 hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-ink/85 shadow-sm flex items-center justify-center z-10 hover:scale-110 active:scale-95 transition-transform"
         >
           <svg
             width="16" height="16" viewBox="0 0 24 24"
-            fill={wishlisted ? '#D62828' : 'none'}
-            stroke={wishlisted ? '#D62828' : '#7A2420'}
+            fill={wishlisted ? '#E5484D' : 'none'}
+            stroke={wishlisted ? '#E5484D' : '#D9B872'}
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             className={wishlisted ? 'animate-pop' : ''}
           >
@@ -91,7 +91,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
         <button
           onClick={handleAddToCart}
           className={`hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-all duration-300 translate-y-full group-hover:translate-y-0 ${
-            justAdded ? 'bg-emerald-600 text-white' : 'bg-nirmal-maroon text-nirmal-cream hover:bg-nirmal-maroon-dark'
+            justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-maroon text-nirmal-cream hover:bg-nirmal-maroon-dark'
           }`}
         >
           {justAdded ? (
@@ -132,7 +132,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
                 }}
                 className={`text-[10px] px-2 py-1 rounded-md border font-medium whitespace-nowrap transition-all cursor-pointer ${
                   selectedSizeIndex === index
-                    ? 'bg-nirmal-maroon text-white border-nirmal-maroon'
+                    ? 'bg-nirmal-maroon text-ink border-nirmal-maroon'
                     : 'bg-transparent text-nirmal-dark/70 border-nirmal-dark/15 hover:border-nirmal-maroon'
                 }`}
               >
@@ -148,7 +148,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
 
         {/* Price + Add — price always paired with its quantity label */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-2 border-t border-nirmal-dark/5">
-          <span className="font-serif text-lg font-bold text-nirmal-maroon">
+          <span className="font-serif text-lg font-semibold text-nirmal-maroon">
             ₹{currentSize.price}
           </span>
 
@@ -156,7 +156,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
           <button
             onClick={handleAddToCart}
             className={`sm:hidden font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0 cursor-pointer ${
-              justAdded ? 'bg-emerald-600 text-white' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
+              justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
             }`}
           >
             {justAdded ? 'Added ✓' : 'Add'}

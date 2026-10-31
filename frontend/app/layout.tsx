@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/components/layout/CartProvider';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const display = Cormorant_Garamond({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -57,13 +57,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${inter.variable} h-full antialiased scroll-smooth`}
+      className={`${display.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col bg-nirmal-cream">
+      <body className="min-h-full flex flex-col bg-ink text-ivory">
         <CartProvider>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-nirmal-maroon text-white px-4 py-2 rounded-lg"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-nirmal-maroon text-ink px-4 py-2 rounded-lg"
           >
             Skip to content
           </a>
