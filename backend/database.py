@@ -1,7 +1,8 @@
-from pymongo import MongoClient
 import os
 import urllib.parse
+
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 # Load environment variables from the .env file
 load_dotenv()

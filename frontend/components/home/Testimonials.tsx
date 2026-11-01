@@ -58,7 +58,7 @@ export default function Testimonials() {
                   </svg>
                 ))}
               </div>
-              <p className="text-sm text-ivory/85 leading-relaxed mb-6 flex-grow relative">
+              <p className="text-sm text-ivory/85 leading-relaxed mb-6 grow relative">
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3 pt-4 border-t border-gold/15">

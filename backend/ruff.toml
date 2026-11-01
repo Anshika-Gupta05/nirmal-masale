@@ -1,0 +1,4 @@
+# Your venv runs Python 3.9, so tell Ruff to lint for 3.9.
+# Without this Ruff assumes a newer Python and suggests syntax that would crash on 3.9
+# (`X | None` in Pydantic models, `datetime.UTC`).
+target-version = "py39"

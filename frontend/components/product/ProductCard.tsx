@@ -57,7 +57,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
       }}>
 
       {/* Image block — edge to edge, catalog style */}
-      <Link href={`/shop/${product.slug}`} className="relative w-full aspect-[4/5] bg-parchment overflow-hidden block shrink-0">
+      <Link href={`/shop/${product.slug}`} className="relative w-full aspect-4/5 bg-parchment overflow-hidden block shrink-0">
         <Image
           src={product.image}
           alt={product.name}
@@ -113,12 +113,12 @@ export default function ProductCard({ product }: { product: ProductProps }) {
       </Link>
 
       {/* Content — fixed structure so every card lines up regardless of size count */}
-      <div className="p-[clamp(10px,5cqw,16px)] flex flex-col flex-grow">
+      <div className="p-[clamp(10px,5cqw,16px)] flex flex-col grow">
         <Link href={`/shop/${product.slug}`} className="block">
-          <p className="text-[clamp(8px,4.2cqw,10px)] uppercase tracking-wider font-bold text-nirmal-dark/50 mb-0.5">
+          <p className="text-[clamp(9px,4.2cqw,11px)] uppercase tracking-wider font-bold text-nirmal-dark/50 mb-0.5">
             Nirmal Masale
           </p>
-          <h3 className="text-[clamp(12px,6.6cqw,15px)] font-semibold text-nirmal-dark leading-snug line-clamp-2 mb-2.5 group-hover:text-nirmal-maroon transition-colors min-h-[2.6em]">
+          <h3 className="text-[clamp(14px,7.6cqw,18px)] font-bold text-nirmal-dark leading-snug line-clamp-2 mb-2.5 group-hover:text-nirmal-maroon transition-colors min-h-[2.6em]">
             {product.name}
           </h3>
         </Link>
@@ -126,7 +126,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
         {/* Quantity row — ALWAYS visible. Interactive pills when there's a choice,
             a plain badge when there's only one pack size, so every card shows a
             weight and every card reserves the same vertical space. */}
-        <div className="flex items-center gap-1.5 mb-3 min-h-[26px] overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1.5 mb-3 min-h-6.5 overflow-x-auto no-scrollbar">
           {sizes.length > 1 ? (
             sizes.map((size, index) => (
               <button
@@ -145,7 +145,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
               </button>
             ))
           ) : (
-            <span className="text-[10px] px-2 py-1 rounded-md border border-nirmal-dark/15 text-nirmal-dark/60 font-medium whitespace-nowrap">
+            <span className="text-[11px] px-2 py-1 rounded-md border border-nirmal-dark/15 text-nirmal-dark/60 font-medium whitespace-nowrap">
               {currentSize.weight}
             </span>
           )}
@@ -153,7 +153,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
 
         {/* Price + Add — price always paired with its quantity label */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-2 border-t border-nirmal-dark/5">
-          <span className="font-serif text-[clamp(15px,8.5cqw,20px)] font-semibold text-nirmal-maroon">
+          <span className="price text-[clamp(15px,8.5cqw,20px)] text-nirmal-maroon">
             ₹{currentSize.price}
           </span>
 

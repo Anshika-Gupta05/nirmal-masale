@@ -1,9 +1,13 @@
+import logging
 import os
 import re
 import urllib.parse
+
 import pandas as pd
-from pymongo import MongoClient
 from dotenv import load_dotenv
+from pymongo import MongoClient
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -176,7 +180,8 @@ def extract_sheet_data(xls, sheet_name, skiprows, col_names, item_col, size_col,
                 "description": f"Authentic {name} processed and packed hygienically.",
                 "image_url": matched_image
             })
-        except Exception as e:
+        except (TypeError, ValueError, AttributeError) as exc:
+            logger.warning("Skipping invalid product row %r: %s", row.to_dict(), exc)
             continue
     return products
 

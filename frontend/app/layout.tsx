@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/nirmal_gold_masale_logo.png",
+    icon: "/nirmal_gold_masale_logo_square.png",
   },
 };
 
@@ -73,12 +73,12 @@ export default function RootLayout({
           <ScrollProgress />
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-nirmal-maroon text-ink px-4 py-2 rounded-lg"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-100 bg-nirmal-maroon text-ink px-4 py-2 rounded-lg"
           >
             Skip to content
           </a>
           <Header />
-          <main id="main-content" className="flex flex-col flex-grow">
+          <main id="main-content" className="flex flex-col grow">
             {children}
           </main>
           <Footer />

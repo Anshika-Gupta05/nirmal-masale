@@ -82,7 +82,7 @@ export default function CartDrawer({
               </p>
               <div className="h-1.5 w-full bg-ink rounded-full overflow-hidden mb-1 border border-gold/20">
                 <div
-                  className="h-full bg-gradient-to-r from-gold to-gold-soft rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(217,184,114,0.6)]"
+                  className="h-full bg-linear-to-r from-gold to-gold-soft rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(217,184,114,0.6)]"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -126,15 +126,15 @@ export default function CartDrawer({
                         className="object-contain"
                       />
                     ) : (
-                      <span className="text-[10px] font-serif font-semibold text-gold-soft">{item.selectedSize}</span>
+                      <span className="text-xs font-semibold text-gold-soft">{item.selectedSize}</span>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif font-semibold text-ivory text-sm mb-1 truncate">{item.name}</h3>
+                    <h3 className="font-serif font-bold text-ivory text-base mb-1 truncate">{item.name}</h3>
                     <p className="text-xs text-ivory/60 mb-2">Weight: {item.selectedSize}</p>
                     <div className="flex items-center justify-between">
-                      <span className="font-serif font-semibold text-gold-soft text-sm">
+                      <span className="price text-gold-soft text-sm">
                         ₹{item.price * item.quantity}
                       </span>
 
@@ -178,7 +178,7 @@ export default function CartDrawer({
             <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] bg-surface-2 border-t border-gold/25 shadow-lg shrink-0">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-ivory/80 font-medium text-sm">Subtotal</span>
-                <span className="font-serif text-2xl font-semibold text-gold-soft">₹{subtotal}</span>
+                <span className="price text-2xl text-gold-soft">₹{subtotal}</span>
               </div>
               <p className="text-xs text-ivory/50 mb-6">Shipping &amp; taxes calculated at checkout.</p>
 

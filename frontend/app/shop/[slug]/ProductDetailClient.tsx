@@ -64,7 +64,7 @@ export default function ProductDetailClient({
       <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
 
         {/* Left: Product Image Showcase - PURE WHITE + BLEND MODE */}
-        <div className="animate-fade-in relative h-96 lg:h-[500px] bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
+        <div className="animate-fade-in relative h-96 lg:h-125 bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
           <span className="absolute top-4 left-4 bg-ink/85 text-gold-soft text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
             {dbProduct.category}
           </span>
@@ -73,7 +73,7 @@ export default function ProductDetailClient({
               src={dbProduct.image_url}
               alt={dbProduct.name}
               fill
-              className="object-contain p-8 lg:p-12 mix-blend-multiply hover:scale-105 transition-transform duration-[900ms] ease-out"
+              className="object-contain p-8 lg:p-12 mix-blend-multiply hover:scale-105 transition-transform duration-900 ease-out"
               priority
             />
           </div>
@@ -124,7 +124,7 @@ export default function ProductDetailClient({
           <div className="bg-surface p-6 rounded-2xl border border-nirmal-maroon/10 shadow-sm mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs text-nirmal-dark/60 block uppercase font-medium">Total Price</span>
-              <span className="font-serif text-3xl font-semibold text-nirmal-maroon">
+              <span className="price text-3xl text-nirmal-maroon">
                 ₹{currentSize.price * quantity}
               </span>
             </div>
@@ -154,7 +154,7 @@ export default function ProductDetailClient({
               {/* Add to Cart CTA */}
               <button
                 onClick={handleAddToCart}
-                className={`flex-grow sm:flex-grow-0 font-semibold px-6 py-3 rounded-xl transition-all shadow-md text-sm cursor-pointer ${
+                className={`grow sm:grow-0 font-semibold px-6 py-3 rounded-xl transition-all shadow-md text-sm cursor-pointer ${
                   justAdded ? 'bg-emerald-500 text-ink scale-[1.03]' : 'btn-sheen bg-nirmal-cta text-ink hover:bg-nirmal-cta-hover'
                 }`}
               >
@@ -212,7 +212,7 @@ export default function ProductDetailClient({
           </button>
         </div>
 
-        <div className="text-nirmal-dark/80 leading-relaxed text-base min-h-[80px]">
+        <div className="text-nirmal-dark/80 leading-relaxed text-base min-h-20">
           {activeTab === 'ingredients' && <p>100% pure and authentic spices, stone-ground to preserve essential oils and natural aroma — no fillers or artificial colours added.</p>}
           {activeTab === 'storage' && <p>Store in a cool, dry place inside an airtight container immediately after opening to retain peak aroma and freshness for longer.</p>}
           {activeTab === 'delivery' && <p>Orders above ₹300 ship free across India. Cash on delivery is available in most pin codes. You can track your order anytime from the Track Order page once it&apos;s dispatched.</p>}
@@ -250,7 +250,7 @@ export default function ProductDetailClient({
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-xl border-t border-gold/25 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-nirmal-dark/50">Total</p>
-          <p className="font-serif text-xl font-semibold text-nirmal-maroon truncate">₹{currentSize.price * quantity}</p>
+          <p className="price text-xl text-nirmal-maroon truncate">₹{currentSize.price * quantity}</p>
         </div>
         <button
           onClick={handleAddToCart}

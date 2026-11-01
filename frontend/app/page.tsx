@@ -43,7 +43,7 @@ const COLLECTIONS = [
 // Every poster tile uses the exact same frame (5:2), so all images display at an identical size.
 function Stage({ img, alt, priority = false, sizes }: { img: string; alt: string; priority?: boolean; sizes: string }) {
   return (
-    <div className="stage relative w-full aspect-[5/2] overflow-hidden">
+    <div className="stage relative w-full aspect-5/2 overflow-hidden">
       <Image src={`/posters/${img}.webp`} alt={alt} fill sizes={sizes} priority={priority} className="object-contain" />
     </div>
   );
@@ -84,12 +84,12 @@ export default async function Home() {
   }));
 
   return (
-    <div className="flex flex-col flex-grow">
+    <div className="flex flex-col grow">
       {/* Hero */}
       <section className="relative overflow-hidden bg-ink pt-20 md:pt-28 pb-16 md:pb-24">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(184,146,74,0.16),transparent_70%)]" />
-        <div className="absolute -top-32 left-[8%] w-[28rem] h-[28rem] rounded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
-        <div className="absolute top-40 -right-24 w-[26rem] h-[26rem] rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-6s' }} />
+        <div className="absolute -top-32 left-[8%] w-md h-[28h-112ded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
+        <div className="absolute top-40 -right-24 w-104 h-104 rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-6s' }} />
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <p className="eyebrow mb-6 animate-fade-in">Dehradun <span className="mx-2 text-gold">◆</span> Since 2001</p>

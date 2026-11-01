@@ -1,13 +1,21 @@
+from __future__ import annotations
+
+# `Optional[...]` is kept on purpose: Pydantic/FastAPI evaluate these annotations at runtime and
+# `X | None` crashes on Python 3.9. Remove this line after upgrading to Python 3.10+.
+# ruff: noqa: UP045
+import os
+import uuid
+from typing import Optional
+
+import uvicorn
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
-import uvicorn
-import uuid
 
 # Import our MongoDB collections!
-from database import get_products_collection, get_orders_collection
+from database import get_orders_collection, get_products_collection
 from emailer import email_configured, is_valid_email, send_order_confirmation
+from payments import router as payments_router
 
 app = FastAPI(
     title="Nirmal Masale API",
@@ -15,14 +23,21 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS setup for Next.js frontend
+# CORS setup for Next.js frontend. Set FRONTEND_URL in backend/.env for production
+# (e.g. https://www.nirmalgold.in) - it is added to the allowed origins.
+_origins = ["http://localhost:3000", "http://192.168.1.14:3000"]
+if os.getenv("FRONTEND_URL"):
+    _origins.append(os.getenv("FRONTEND_URL").rstrip("/"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://192.168.1.14:3000"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(payments_router)
 
 # --- GET ROUTES (CATALOG) ---
 
@@ -113,7 +128,7 @@ class CheckoutRequestSchema(BaseModel):
     last_name: str
     address: str
     total_amount: float
-    items: List[CartItemSchema]
+    items: list[CartItemSchema]
     # Optional extras - older clients that don't send them keep working.
     email: Optional[str] = None
     phone: Optional[str] = None
@@ -138,6 +153,7 @@ def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTas
         "customer_phone": request.phone,
         "payment_method": request.payment_method,
         "shipping_address": request.shipping_address,
+        "payment_status": "cod" if request.payment_method == "cod" else "unpaid",
     }
     
     collection.insert_one(order_document)
@@ -154,6 +170,7 @@ def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTas
                     "first_name": request.first_name,
                     "last_name": request.last_name,
                     "email": request.email,
+                    "phone": request.phone,
                     "items": [item.dict() for item in request.items],
                     "total_amount": request.total_amount,
                     "shipping_address": request.shipping_address or request.address,

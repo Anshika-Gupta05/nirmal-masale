@@ -68,7 +68,7 @@ export default function Header() {
   return (
     <>
       {/* Announcement Bar */}
-      <div className="bg-surface-2 text-gold-soft text-[clamp(9px,2.5vw,11px)] tracking-[0.1em] sm:tracking-[0.18em] uppercase border-b border-gold/30">
+      <div className="bg-surface-2 text-gold-soft text-[clamp(9px,2.5vw,11px)] tracking-widest sm:tracking-[0.18em] uppercase border-b border-gold/30">
         <div className="container mx-auto px-6 py-2 text-center font-medium">
           Free delivery above ₹300 <span className="text-gold mx-2">◆</span> Pure &amp; stone-ground since 2001
         </div>
@@ -121,7 +121,7 @@ export default function Header() {
                 <path d="M5 8h14l-1 12H6L5 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" />
               </svg>
               {cartCount > 0 && (
-                <span className={`absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-soft text-ink text-[10px] font-bold flex items-center justify-center ${bump ? 'animate-bump' : ''}`}>
+                <span className={`absolute -top-0.5 -right-0.5 min-w-4.5 h-4.5 px-1 rounded-full bg-gold-soft text-ink text-[10px] font-bold flex items-center justify-center ${bump ? 'animate-bump' : ''}`}>
                   {cartCount}
                 </span>
               )}
@@ -142,7 +142,7 @@ export default function Header() {
       </header>
 
     {isMenuOpen && (
-      <div className="md:hidden fixed inset-x-0 bottom-0 z-[39] overflow-y-auto bg-ink/95 backdrop-blur-xl px-6 sm:px-8 pt-8 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] flex flex-col gap-5 border-t border-gold/25 animate-fade-in" style={{ top: menuTop }}>
+      <div className="md:hidden fixed inset-x-0 bottom-0 z-39 overflow-y-auto bg-ink/95 backdrop-blur-xl px-6 sm:px-8 pt-8 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] flex flex-col gap-5 border-t border-gold/25 animate-fade-in" style={{ top: menuTop }}>
         {NAV_LINKS.map((l, i) => (
           <Link
             key={l.href}

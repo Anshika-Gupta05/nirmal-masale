@@ -49,7 +49,7 @@ export default function PromoPosters() {
             <Link
               key={poster.title}
               href={poster.href}
-              className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${poster.bg} min-h-[300px] sm:min-h-[340px] flex flex-col justify-between p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300`}
+              className={`group relative overflow-hidden rounded-3xl bg-linear-to-br ${poster.bg} min-h-75 sm:min-h-85 flex flex-col justify-between p-7 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300`}
             >
               {/* Decorative curved shape */}
               <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/10" />
@@ -64,7 +64,7 @@ export default function PromoPosters() {
                 <h3 className={`font-serif text-3xl font-bold ${poster.text} mb-2 leading-tight whitespace-pre-line`}>
                   {poster.title}
                 </h3>
-                <p className={`${poster.subtext} text-sm mb-5 max-w-[220px]`}>
+                <p className={`${poster.subtext} text-sm mb-5 max-w-55`}>
                   {poster.subtitle}
                 </p>
                 <span className={`inline-flex items-center gap-2 font-semibold px-5 py-2.5 rounded-xl text-sm ${poster.ctaClass} transition-colors`}>

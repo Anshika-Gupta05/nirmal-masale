@@ -27,6 +27,7 @@ Always run the dry run first and read the report before using --apply.
 
 import re
 import sys
+
 from database import get_products_collection
 
 # Known spelling variants -> canonical spelling.

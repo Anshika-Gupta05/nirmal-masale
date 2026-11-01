@@ -9,6 +9,7 @@ import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import type { ParsedAddress } from '@/lib/addressParser';
 import { INDIAN_STATES, lookupCity } from '@/lib/indiaLocations';
 import { fetchPincodeInfo } from '@/lib/pincode';
+import { getCheckoutLogo, loadRazorpay, openRazorpay, type RazorpaySuccess } from '@/lib/razorpay';
 
 interface FormState {
   firstName: string;
@@ -163,51 +164,121 @@ export default function CheckoutPage() {
     return Object.keys(next).length === 0;
   };
 
+  const finishOrder = (number: string, emailQueued: boolean) => {
+    setOrderNumber(number);
+    if (emailQueued) setEmailedTo(form.email.trim());
+    clearCart();
+  };
+
+  // Online payment: server prices the cart + creates the Razorpay order -> popup -> server verifies signature.
+  const payOnline = async (customer: Record<string, unknown>, cartItems: Record<string, unknown>[]) => {
+    const res = await fetch(apiUrl('/api/payments/create-order'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...customer, items: cartItems }),
+    });
+    const created = await res.json();
+    if (!res.ok || created.status !== 'success') {
+      throw new Error(created.detail || created.message || 'Could not start the payment. Please try again.');
+    }
+
+    if (!(await loadRazorpay())) {
+      throw new Error('Could not load the payment window. Check your connection or ad-blocker and try again.');
+    }
+
+    openRazorpay(
+      {
+        key: created.key_id,
+        amount: created.amount,
+        currency: created.currency,
+        order_id: created.razorpay_order_id,
+        name: 'Nirmal Gold Masale',
+        description: `Order ${created.order_number}`,
+        image: await getCheckoutLogo(),
+        prefill: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email.trim(),
+          contact: form.phone.replace(/\D/g, ''),
+        },
+        theme: { color: '#B8924A' },
+        handler: async (response: RazorpaySuccess) => {
+          try {
+            const verifyRes = await fetch(apiUrl('/api/payments/verify'), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_number: created.order_number, ...response }),
+            });
+            const verified = await verifyRes.json();
+            if (!verifyRes.ok || verified.status !== 'success') throw new Error(verified.detail || 'verify failed');
+            finishOrder(verified.order_number, Boolean(verified.email_queued));
+          } catch {
+            // The money may already have left their account. Our webhook will still confirm the order.
+            setSubmitError(
+              `We received your payment but couldn't confirm it on this page. Please don't pay again - your order ${created.order_number} will be confirmed automatically. You can check it on the Track Order page.`,
+            );
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setSubmitError('Payment was cancelled. You have not been charged - you can try again whenever you are ready.');
+            setIsSubmitting(false);
+          },
+        },
+      },
+      (message) => setSubmitError(message), // popup stays open so the customer can retry inside it
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
     if (!validate()) return;
 
     setIsSubmitting(true);
+    const cartItems = items.map((item) => ({
+      product_name: item.name,
+      weight: item.selectedSize,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+    const customer = {
+      first_name: form.firstName,
+      last_name: form.lastName,
+      address: `${form.address}, ${form.city}, ${form.state} - ${form.pincode} | Phone: ${form.phone} | Email: ${form.email} | Payment: ${form.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online'}`,
+      // Sent separately so the backend can email the customer a clean confirmation.
+      email: form.email.trim(),
+      phone: form.phone.replace(/\D/g, ''),
+      shipping_address: `${form.address.trim()}, ${form.city.trim()}, ${form.state.trim()} - ${form.pincode.trim()}`,
+    };
+
     try {
-      const fullAddress = `${form.address}, ${form.city}, ${form.state} - ${form.pincode} | Phone: ${form.phone} | Email: ${form.email} | Payment: ${form.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online'}`;
+      if (form.paymentMethod === 'online') {
+        await payOnline(customer, cartItems);
+        return; // isSubmitting stays true while the popup is open; its callbacks reset it
+      }
 
       const res = await fetch(apiUrl('/api/checkout'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: form.firstName,
-          last_name: form.lastName,
-          address: fullAddress,
-          // Sent separately so the backend can email the customer a clean confirmation.
-          email: form.email.trim(),
-          phone: form.phone.replace(/\D/g, ''),
-          payment_method: form.paymentMethod,
-          shipping_address: `${form.address.trim()}, ${form.city.trim()}, ${form.state.trim()} - ${form.pincode.trim()}`,
-          total_amount: total,
-          items: items.map((item) => ({
-            product_name: item.name,
-            weight: item.selectedSize,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }),
+        body: JSON.stringify({ ...customer, payment_method: 'cod', total_amount: total, items: cartItems }),
       });
-
       const data = await res.json();
 
       if (data.status === 'success') {
-        setOrderNumber(data.order_number);
-        if (data.email_queued) setEmailedTo(form.email.trim());
-        clearCart();
+        finishOrder(data.order_number, Boolean(data.email_queued));
       } else {
         setSubmitError(data.message || 'Something went wrong while placing your order. Please try again.');
       }
     } catch (err) {
-      setSubmitError('We could not reach the server. Please check your connection and try again.');
-    } finally {
-      setIsSubmitting(false);
+      setSubmitError(
+        err instanceof Error && form.paymentMethod === 'online'
+          ? err.message
+          : 'We could not reach the server. Please check your connection and try again.',
+      );
     }
+    setIsSubmitting(false);
   };
 
   // --- Order confirmed screen ---
@@ -225,7 +296,7 @@ export default function CheckoutPage() {
         </p>
         <div className="bg-surface border border-nirmal-gold/40 rounded-2xl p-6 mb-8">
           <p className="text-xs uppercase text-nirmal-dark/50 font-semibold mb-1">Your Tracking Number</p>
-          <p className="font-serif text-2xl font-semibold text-nirmal-maroon tracking-wide">{orderNumber}</p>
+          <p className="text-2xl font-semibold text-nirmal-maroon tracking-wide">{orderNumber}</p>
           <p className="text-xs text-nirmal-dark/50 mt-2">Save this number to track your order status anytime.</p>
           {emailedTo && (
             <p className="text-xs text-nirmal-dark/70 mt-4 pt-4 border-t border-nirmal-gold/20">
@@ -404,6 +475,7 @@ export default function CheckoutPage() {
                   }`}
                 >
                   UPI / Card (Online)
+                  <span className="block text-[11px] font-normal text-nirmal-dark/50 mt-0.5">Secured by Razorpay</span>
                 </button>
               </div>
             </div>
@@ -417,7 +489,9 @@ export default function CheckoutPage() {
               disabled={isSubmitting}
               className="w-full bg-nirmal-cta text-nirmal-cream font-semibold py-4 rounded-xl hover:bg-nirmal-cta-hover transition-all shadow-md mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Placing Your Order…' : `Place Order — ₹${total}`}
+              {isSubmitting
+                ? form.paymentMethod === 'online' ? 'Waiting for Payment…' : 'Placing Your Order…'
+                : form.paymentMethod === 'online' ? `Pay Securely — ₹${total}` : `Place Order — ₹${total}`}
             </button>
           </form>
         </div>
@@ -426,12 +500,12 @@ export default function CheckoutPage() {
         <div className="lg:col-span-5 bg-nirmal-cream border border-nirmal-gold/30 p-8 rounded-2xl shadow-sm lg:sticky lg:top-24">
           <h2 className="font-serif text-xl font-semibold text-nirmal-dark mb-6">Order Summary</h2>
 
-          <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
+          <div className="space-y-4 mb-6 max-h-75 overflow-y-auto pr-2">
             {items.map((item) => (
               <div key={`${item.id}-${item.selectedSize}`} className="flex justify-between items-center text-sm">
                 <div className="flex items-center gap-3">
                   {/* Product Image Box */}
-                  <div className="w-12 h-12 bg-parchment border border-gold/30 rounded-xl relative flex-shrink-0 flex items-center justify-center overflow-hidden p-1.5">
+                  <div className="w-12 h-12 bg-parchment border border-gold/30 rounded-xl relative shrink-0 flex items-center justify-center overflow-hidden p-1.5">
                     {item.image ? (
                       <Image
                         src={item.image}
@@ -462,7 +536,7 @@ export default function CheckoutPage() {
               <span>Shipping</span>
               <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
             </div>
-            <div className="flex justify-between font-serif text-2xl font-semibold text-nirmal-maroon pt-4 border-t border-nirmal-dark/10">
+            <div className="flex justify-between price text-2xl text-nirmal-maroon pt-4 border-t border-nirmal-dark/10">
               <span>Total</span>
               <span>₹{total}</span>
             </div>

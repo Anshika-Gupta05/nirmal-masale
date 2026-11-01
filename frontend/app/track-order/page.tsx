@@ -81,8 +81,8 @@ export default function TrackOrderPage() {
   return (
     <div className="relative overflow-hidden">
       {/* ambient glows */}
-      <div className="absolute -top-24 left-[6%] w-[26rem] h-[26rem] rounded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
-      <div className="absolute bottom-0 -right-24 w-[26rem] h-[26rem] rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-7s' }} />
+      <div className="absolute -top-24 left-[6%] w-104 h-104 rounded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
+      <div className="absolute bottom-0 -right-24 w-104 h-104 rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-7s' }} />
 
       <div className="container mx-auto px-6 py-16 md:py-24 flex flex-col items-center justify-center min-h-[70dvh] relative z-10">
         {/* Heading */}
@@ -115,7 +115,7 @@ export default function TrackOrderPage() {
                 <circle cx="17" cy="17.5" r="1.8" />
               </svg>
             </div>
-            <div className="road h-[2px] mt-0.5" />
+            <div className="road h-0.5 mt-0.5" />
           </div>
 
           <form className="space-y-5" onSubmit={handleTrack}>
@@ -172,7 +172,7 @@ export default function TrackOrderPage() {
                           {i > 0 && (
                             <div className="absolute top-3 right-1/2 w-full h-0.5 bg-gold/15 overflow-hidden">
                               <div
-                                className="h-full w-full bg-gradient-to-r from-gold to-gold-soft origin-left transition-transform ease-out"
+                                className="h-full w-full bg-linear-to-r from-gold to-gold-soft origin-left transition-transform ease-out"
                                 style={{
                                   transform: progressOn && i <= currentStepIndex ? 'scaleX(1)' : 'scaleX(0)',
                                   transitionDuration: `${STEP_DELAY}ms`,
@@ -201,7 +201,7 @@ export default function TrackOrderPage() {
                             </div>
                           </div>
                           <span
-                            className={`text-[9px] mt-2 text-center leading-tight transition-colors duration-500 ${
+                            className={`text-[11px] mt-2 text-center leading-tight transition-colors duration-500 ${
                               reached ? 'text-gold-soft' : 'text-ivory-muted'
                             }`}
                             style={{ transitionDelay: reached ? `${i * STEP_DELAY}ms` : '0ms' }}
