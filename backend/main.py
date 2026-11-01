@@ -1,12 +1,13 @@
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 import uvicorn
 import uuid
 
 # Import our MongoDB collections!
 from database import get_products_collection, get_orders_collection
+from emailer import email_configured, is_valid_email, send_order_confirmation
 
 app = FastAPI(
     title="Nirmal Masale API",
@@ -113,9 +114,14 @@ class CheckoutRequestSchema(BaseModel):
     address: str
     total_amount: float
     items: List[CartItemSchema]
+    # Optional extras - older clients that don't send them keep working.
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    payment_method: Optional[str] = None
+    shipping_address: Optional[str] = None  # clean "street, city, state - pincode" for the email
 
 @app.post("/api/checkout")
-def create_order(request: CheckoutRequestSchema):
+def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTasks):
     tracking_number = f"NRM-{str(uuid.uuid4().hex[:6]).upper()}"
     collection = get_orders_collection()
 
@@ -127,15 +133,42 @@ def create_order(request: CheckoutRequestSchema):
         "address": request.address,
         "total_amount": request.total_amount,
         "status": "Processing",
-        "items": [item.dict() for item in request.items] 
+        "items": [item.dict() for item in request.items],
+        "customer_email": (request.email or "").strip(),
+        "customer_phone": request.phone,
+        "payment_method": request.payment_method,
+        "shipping_address": request.shipping_address,
     }
     
     collection.insert_one(order_document)
 
+    # Send the confirmation email AFTER the response, so checkout stays fast and a
+    # mail problem can never make a paid/placed order look like it failed.
+    email_queued = False
+    if is_valid_email(request.email):
+        if email_configured():
+            background_tasks.add_task(
+                send_order_confirmation,
+                {
+                    "order_number": tracking_number,
+                    "first_name": request.first_name,
+                    "last_name": request.last_name,
+                    "email": request.email,
+                    "items": [item.dict() for item in request.items],
+                    "total_amount": request.total_amount,
+                    "shipping_address": request.shipping_address or request.address,
+                    "payment_method": request.payment_method,
+                },
+            )
+            email_queued = True
+        else:
+            print("[email] SMTP_HOST is not set in backend/.env - skipping confirmation email.")
+
     return {
         "status": "success", 
         "message": "Order placed successfully!",
-        "order_number": tracking_number
+        "order_number": tracking_number,
+        "email_queued": email_queued,
     }
 
 @app.get("/api/orders/{order_number}")

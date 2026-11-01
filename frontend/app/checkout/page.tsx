@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCart } from '@/components/layout/CartProvider';
 import Link from 'next/link';
 import Image from 'next/image';
 import { apiUrl } from '@/lib/api';
+import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
+import type { ParsedAddress } from '@/lib/addressParser';
+import { INDIAN_STATES, lookupCity } from '@/lib/indiaLocations';
+import { fetchPincodeInfo } from '@/lib/pincode';
 
 interface FormState {
   firstName: string;
@@ -30,6 +34,12 @@ const EMPTY_FORM: FormState = {
   paymentMethod: 'cod',
 };
 
+// Which fields were filled in automatically, and by what. A field the customer typed
+// themselves is never overwritten by an automatic lookup.
+type AutoField = 'city' | 'state' | 'pincode';
+type AutoSource = 'places' | 'pin' | 'city';
+type AutoValues = Partial<Pick<FormState, 'address' | 'city' | 'state' | 'pincode'>>;
+
 export default function CheckoutPage() {
   const { items, cartCount, subtotal, clearCart } = useCart();
   const shipping = subtotal > 300 ? 0 : 50;
@@ -40,10 +50,103 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [emailedTo, setEmailedTo] = useState<string | null>(null);
+
+  const [pincodeIsGuess, setPincodeIsGuess] = useState(false);
+  const autoRef = useRef<Partial<Record<AutoField, AutoSource>>>({});
+  const formRef = useRef(form); // latest form for async callbacks (timers, fetches)
+  const cityTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pinAbort = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    formRef.current = form;
+  }, [form]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(cityTimer.current);
+      pinAbort.current?.abort();
+    },
+    [],
+  );
 
   const updateField = (field: keyof FormState, value: string) => {
+    // A manual edit means the customer owns this field now.
+    if (field === 'city' || field === 'state' || field === 'pincode') {
+      delete autoRef.current[field];
+      if (field === 'pincode') setPincodeIsGuess(false);
+    }
     setForm((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  // We may overwrite a field only if it's empty or was itself auto-filled.
+  const canAutoFill = (field: AutoField) => !formRef.current[field].trim() || autoRef.current[field] !== undefined;
+
+  const applyAutoFill = (values: AutoValues, source: AutoSource) => {
+    setForm((prev) => ({ ...prev, ...values }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      for (const key of Object.keys(values) as (keyof AutoValues)[]) delete next[key];
+      return next;
+    });
+    for (const key of ['city', 'state', 'pincode'] as const) {
+      if (key in values) autoRef.current[key] = source;
+    }
+    setPincodeIsGuess(autoRef.current.pincode === 'city');
+  };
+
+  // 1) Customer picked a Google suggestion -> fill address, city, state, pincode.
+  const handlePlaceSelected = (place: ParsedAddress) => {
+    clearTimeout(cityTimer.current);
+    pinAbort.current?.abort();
+
+    // If Google left something out (small towns often have no pincode), fall back to our city table.
+    const cityHit = lookupCity(place.city);
+    applyAutoFill(
+      {
+        address: place.address,
+        city: place.city,
+        state: place.state || cityHit?.state || '',
+        pincode: place.pincode || cityHit?.pincode || '',
+      },
+      'places',
+    );
+    if (!place.pincode && cityHit) {
+      autoRef.current.pincode = 'city';
+      setPincodeIsGuess(true);
+    }
+  };
+
+  // 2) Smart city fallback: customer typed a city by hand -> fill state + default pincode.
+  const handleCityChange = (value: string) => {
+    updateField('city', value);
+    clearTimeout(cityTimer.current);
+    cityTimer.current = setTimeout(() => {
+      const hit = lookupCity(value);
+      if (!hit) return;
+      const values: AutoValues = {};
+      if (canAutoFill('state')) values.state = hit.state;
+      if (canAutoFill('pincode')) values.pincode = hit.pincode;
+      if (Object.keys(values).length) applyAutoFill(values, 'city');
+    }, 500);
+  };
+
+  // 3) Myntra-style: a full 6-digit pincode is authoritative -> fill state (and city if empty).
+  const handlePincodeChange = (raw: string) => {
+    const pin = raw.replace(/\D/g, '').slice(0, 6);
+    updateField('pincode', pin);
+    pinAbort.current?.abort();
+    if (pin.length !== 6) return;
+
+    const controller = new AbortController();
+    pinAbort.current = controller;
+    fetchPincodeInfo(pin, controller.signal).then((info) => {
+      if (!info || controller.signal.aborted) return;
+      const values: AutoValues = { state: info.state };
+      if (canAutoFill('city')) values.city = info.city;
+      applyAutoFill(values, 'pin');
+    });
   };
 
   const validate = () => {
@@ -76,6 +179,11 @@ export default function CheckoutPage() {
           first_name: form.firstName,
           last_name: form.lastName,
           address: fullAddress,
+          // Sent separately so the backend can email the customer a clean confirmation.
+          email: form.email.trim(),
+          phone: form.phone.replace(/\D/g, ''),
+          payment_method: form.paymentMethod,
+          shipping_address: `${form.address.trim()}, ${form.city.trim()}, ${form.state.trim()} - ${form.pincode.trim()}`,
           total_amount: total,
           items: items.map((item) => ({
             product_name: item.name,
@@ -90,6 +198,7 @@ export default function CheckoutPage() {
 
       if (data.status === 'success') {
         setOrderNumber(data.order_number);
+        if (data.email_queued) setEmailedTo(form.email.trim());
         clearCart();
       } else {
         setSubmitError(data.message || 'Something went wrong while placing your order. Please try again.');
@@ -118,9 +227,14 @@ export default function CheckoutPage() {
           <p className="text-xs uppercase text-nirmal-dark/50 font-semibold mb-1">Your Tracking Number</p>
           <p className="font-serif text-2xl font-semibold text-nirmal-maroon tracking-wide">{orderNumber}</p>
           <p className="text-xs text-nirmal-dark/50 mt-2">Save this number to track your order status anytime.</p>
+          {emailedTo && (
+            <p className="text-xs text-nirmal-dark/70 mt-4 pt-4 border-t border-nirmal-gold/20">
+              We&apos;re emailing your order details and tracking number to <strong className="text-nirmal-dark">{emailedTo}</strong>.
+            </p>
+          )}
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href={`/track-order`} className="bg-nirmal-maroon text-nirmal-cream px-6 py-3 rounded-xl font-semibold hover:bg-nirmal-maroon-dark transition-all">
+          <Link href={`/track-order?order=${encodeURIComponent(orderNumber)}`} className="bg-nirmal-maroon text-nirmal-cream px-6 py-3 rounded-xl font-semibold hover:bg-nirmal-maroon-dark transition-all">
             Track This Order
           </Link>
           <Link href="/shop" className="border border-nirmal-maroon/30 text-nirmal-maroon px-6 py-3 rounded-xl font-semibold hover:bg-nirmal-maroon/5 transition-all">
@@ -207,22 +321,41 @@ export default function CheckoutPage() {
 
             <div>
               <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Address</label>
-              <textarea
+              <AddressAutocomplete
                 value={form.address}
-                onChange={(e) => updateField('address', e.target.value)}
+                onChange={(value) => updateField('address', value)}
+                onPlaceSelected={handlePlaceSelected}
                 className={inputClass(errors.address)}
                 rows={3}
               />
               {errors.address && <p className="text-xs text-red-400 mt-1">{errors.address}</p>}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Pincode</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  maxLength={6}
+                  value={form.pincode}
+                  onChange={(e) => handlePincodeChange(e.target.value)}
+                  placeholder="6-digit pincode"
+                  className={inputClass(errors.pincode)}
+                />
+                {errors.pincode && <p className="text-xs text-red-400 mt-1">{errors.pincode}</p>}
+                {!errors.pincode && pincodeIsGuess && (
+                  <p className="text-xs text-gold-soft mt-1">Default for {form.city || 'your city'} — please confirm yours.</p>
+                )}
+              </div>
               <div>
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">City</label>
                 <input
                   type="text"
+                  autoComplete="address-level2"
                   value={form.city}
-                  onChange={(e) => updateField('city', e.target.value)}
+                  onChange={(e) => handleCityChange(e.target.value)}
                   className={inputClass(errors.city)}
                 />
                 {errors.city && <p className="text-xs text-red-400 mt-1">{errors.city}</p>}
@@ -231,21 +364,18 @@ export default function CheckoutPage() {
                 <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">State</label>
                 <input
                   type="text"
+                  list="india-states"
+                  autoComplete="address-level1"
                   value={form.state}
                   onChange={(e) => updateField('state', e.target.value)}
                   className={inputClass(errors.state)}
                 />
+                <datalist id="india-states">
+                  {INDIAN_STATES.map((st) => (
+                    <option key={st} value={st} />
+                  ))}
+                </datalist>
                 {errors.state && <p className="text-xs text-red-400 mt-1">{errors.state}</p>}
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-nirmal-dark/70 uppercase block mb-2">Pincode</label>
-                <input
-                  type="text"
-                  value={form.pincode}
-                  onChange={(e) => updateField('pincode', e.target.value)}
-                  className={inputClass(errors.pincode)}
-                />
-                {errors.pincode && <p className="text-xs text-red-400 mt-1">{errors.pincode}</p>}
               </div>
             </div>
 

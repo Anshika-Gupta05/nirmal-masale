@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { apiUrl } from '@/lib/api';
 import WordReveal from '@/components/shared/WordReveal';
 
@@ -15,34 +15,53 @@ export default function TrackOrderPage() {
   const [errorKey, setErrorKey] = useState(0); // re-triggers the shake on every new error
   const [progressOn, setProgressOn] = useState(false);
 
-  const fail = (msg: string) => {
+  const fail = useCallback((msg: string) => {
     setError(msg);
     setErrorKey((k) => k + 1);
-  };
+  }, []);
 
-  const handleTrack = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orderId.trim()) return;
+  const trackOrder = useCallback(
+    async (rawId: string) => {
+      const id = rawId.trim();
+      if (!id) return;
 
-    setLoading(true);
-    setError('');
-    setOrderData(null);
+      setOrderId(id.toUpperCase()); // tracking numbers are upper-case, e.g. NRM-A1B2C3
+      setLoading(true);
+      setError('');
+      setOrderData(null);
 
-    try {
-      const res = await fetch(apiUrl(`/api/orders/${orderId.trim()}`));
-      const data = await res.json();
+      try {
+        const res = await fetch(apiUrl(`/api/orders/${encodeURIComponent(id)}`));
+        const data = await res.json();
 
-      if (data.status === 'success') {
-        setOrderData(data.data);
-      } else {
-        fail('Order not found. Please check your tracking number and try again.');
+        if (data.status === 'success') {
+          setOrderData(data.data);
+        } else {
+          fail('Order not found. Please check your tracking number and try again.');
+        }
+      } catch {
+        fail('Failed to connect to the server. Please try again later.');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      fail('Failed to connect to the server. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
+    },
+    [fail],
+  );
+
+  const handleTrack = (e: React.FormEvent) => {
+    e.preventDefault();
+    void trackOrder(orderId);
   };
+
+  // Arriving from checkout (or the email) via /track-order?order=NRM-XXXXXX:
+  // fill the box with that number and look it up straight away.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('order')?.trim();
+    if (!id) return;
+    // Deferred a tick; the cleanup also guarantees a single lookup under React Strict Mode.
+    const timer = window.setTimeout(() => void trackOrder(id), 0);
+    return () => window.clearTimeout(timer);
+  }, [trackOrder]);
 
   // Start the timeline fill just after the result card has appeared
   useEffect(() => {
