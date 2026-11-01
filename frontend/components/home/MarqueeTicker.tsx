@@ -11,12 +11,16 @@ export default function MarqueeTicker() {
   const loop = [...MESSAGES, ...MESSAGES];
 
   return (
-    <div className="bg-nirmal-gold text-nirmal-maroon-dark overflow-hidden py-2.5 border-y border-nirmal-maroon-dark/10">
-      <div className="flex w-max animate-marquee">
+    <div
+      className="group bg-ink border-y border-gold/25 overflow-hidden py-3.5"
+      aria-hidden="true"
+      style={{ maskImage: 'linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)' }}
+    >
+      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
         {loop.map((msg, i) => (
-          <span key={i} className="flex items-center px-6 text-xs font-semibold uppercase tracking-wider whitespace-nowrap">
+          <span key={i} className="flex items-center px-8 font-serif text-lg italic text-gold-soft/90 whitespace-nowrap">
             {msg}
-            <span className="ml-6 opacity-50">&#10022;</span>
+            <span className="ml-16 text-gold/60 not-italic text-xs">◆</span>
           </span>
         ))}
       </div>

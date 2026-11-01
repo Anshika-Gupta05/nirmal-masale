@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/components/layout/CartProvider';
 import ProductCard from '@/components/product/ProductCard';
+import ScrollReveal from '@/components/shared/ScrollReveal';
 
 const TRUST_ITEMS = [
   { label: 'Free delivery over ₹300' },
@@ -63,7 +64,7 @@ export default function ProductDetailClient({
       <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
 
         {/* Left: Product Image Showcase - PURE WHITE + BLEND MODE */}
-        <div className="relative h-96 lg:h-[500px] bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
+        <div className="animate-fade-in relative h-96 lg:h-[500px] bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
           <span className="absolute top-4 left-4 bg-ink/85 text-gold-soft text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
             {dbProduct.category}
           </span>
@@ -72,14 +73,14 @@ export default function ProductDetailClient({
               src={dbProduct.image_url}
               alt={dbProduct.name}
               fill
-              className="object-contain p-8 lg:p-12 mix-blend-multiply hover:scale-105 transition-transform duration-500"
+              className="object-contain p-8 lg:p-12 mix-blend-multiply hover:scale-105 transition-transform duration-[900ms] ease-out"
               priority
             />
           </div>
         </div>
 
         {/* Right: Product Details & Actions */}
-        <div className="flex flex-col">
+        <div className="flex flex-col animate-fade-up" style={{ animationDelay: '150ms' }}>
           <h1 className="font-serif text-3xl lg:text-4xl font-semibold text-nirmal-dark mb-3">
             {dbProduct.name}
           </h1>
@@ -154,7 +155,7 @@ export default function ProductDetailClient({
               <button
                 onClick={handleAddToCart}
                 className={`flex-grow sm:flex-grow-0 font-semibold px-6 py-3 rounded-xl transition-all shadow-md text-sm cursor-pointer ${
-                  justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-cta text-nirmal-cream hover:bg-nirmal-cta-hover'
+                  justAdded ? 'bg-emerald-500 text-ink scale-[1.03]' : 'btn-sheen bg-nirmal-cta text-ink hover:bg-nirmal-cta-hover'
                 }`}
               >
                 {justAdded ? 'Added to Cart ✓' : 'Add to Cart'}
@@ -221,13 +222,15 @@ export default function ProductDetailClient({
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <div>
-          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-nirmal-dark mb-8">
-            You May Also Like
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map((p: any) => (
+          <ScrollReveal>
+            <h2 className="font-serif text-3xl md:text-4xl font-medium text-nirmal-dark mb-8">
+              You May Also Like
+            </h2>
+          </ScrollReveal>
+          <div className="grid grid-cols-2 max-[340px]:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+            {relatedProducts.map((p: any, i: number) => (
+              <ScrollReveal key={p.id || p.slug} delay={i * 90} className="h-full">
               <ProductCard
-                key={p.id || p.slug}
                 product={{
                   id: String(p.id),
                   name: p.name,
@@ -237,13 +240,14 @@ export default function ProductDetailClient({
                   sizes: p.sizes,
                 }}
               />
+              </ScrollReveal>
             ))}
           </div>
         </div>
       )}
 
       {/* Sticky mobile add-to-cart bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-nirmal-maroon/10 p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] flex items-center gap-3">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-xl border-t border-gold/25 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-nirmal-dark/50">Total</p>
           <p className="font-serif text-xl font-semibold text-nirmal-maroon truncate">₹{currentSize.price * quantity}</p>

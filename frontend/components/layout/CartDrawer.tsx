@@ -49,7 +49,7 @@ export default function CartDrawer({
 
       <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
         <div
-          className={`w-screen max-w-md bg-ink text-ivory shadow-2xl flex flex-col transition-transform duration-300 ease-out border-l border-gold/25 ${
+          className={`w-screen max-w-md bg-ink text-ivory shadow-2xl flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] border-l border-gold/25 ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -82,7 +82,7 @@ export default function CartDrawer({
               </p>
               <div className="h-1.5 w-full bg-ink rounded-full overflow-hidden mb-1 border border-gold/20">
                 <div
-                  className="h-full bg-gold-soft rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-gold to-gold-soft rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(217,184,114,0.6)]"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -111,10 +111,11 @@ export default function CartDrawer({
                 </Link>
               </div>
             ) : (
-              items.map((item) => (
+              items.map((item, idx) => (
                 <div
                   key={`${item.id}-${item.selectedSize}`}
-                  className="bg-surface-2 p-4 rounded-xl border border-gold/30 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.8)] flex items-center gap-4"
+                  style={{ animationDelay: isOpen ? `${150 + idx * 70}ms` : '0ms' }}
+                  className="stagger-item bg-surface-2 p-4 rounded-xl border border-gold/30 hover:border-gold/60 transition-colors shadow-[0_10px_30px_-15px_rgba(0,0,0,0.8)] flex items-center gap-4"
                 >
                   <div className="w-16 h-16 bg-ink rounded-xl relative shrink-0 flex items-center justify-center overflow-hidden border border-gold/30 p-2">
                     {item.image ? (
@@ -174,7 +175,7 @@ export default function CartDrawer({
 
           {/* Drawer Footer & Checkout CTA */}
           {items.length > 0 && (
-            <div className="p-6 bg-surface-2 border-t border-gold/25 shadow-lg shrink-0">
+            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] bg-surface-2 border-t border-gold/25 shadow-lg shrink-0">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-ivory/80 font-medium text-sm">Subtotal</span>
                 <span className="font-serif text-2xl font-semibold text-gold-soft">₹{subtotal}</span>
@@ -184,7 +185,7 @@ export default function CartDrawer({
               <Link
                 href="/checkout"
                 onClick={onClose}
-                className="w-full bg-gold-soft text-ink font-semibold py-3.5 rounded-xl hover:bg-nirmal-gold transition-all shadow-md block text-center"
+                className="btn-sheen w-full bg-gold-soft text-ink font-semibold py-3.5 rounded-xl hover:bg-ivory transition-all shadow-md block text-center"
               >
                 Proceed to Checkout
               </Link>

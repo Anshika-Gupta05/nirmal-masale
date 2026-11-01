@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/components/layout/CartProvider';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import ScrollProgress from '@/components/shared/ScrollProgress';
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -19,6 +20,14 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // lets us use env(safe-area-inset-*) on notched phones
+  themeColor: "#1A100C",
+  colorScheme: "dark",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nirmalmasale.in"),
@@ -59,8 +68,9 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col bg-ink text-ivory">
+      <body className="grain min-h-full flex flex-col bg-ink text-ivory">
         <CartProvider>
+          <ScrollProgress />
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-nirmal-maroon text-ink px-4 py-2 rounded-lg"

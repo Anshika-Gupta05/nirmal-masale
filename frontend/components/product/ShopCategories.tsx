@@ -154,7 +154,7 @@ export default function ShopCategories({
                 onChange={() => toggle(selectedCategories, cat, setSelectedCategories)}
                 className="w-4 h-4 rounded accent-nirmal-maroon cursor-pointer"
               />
-              <span className="text-sm text-nirmal-dark group-hover/cb:text-nirmal-maroon transition-colors flex-1">
+              <span className="text-sm text-nirmal-dark group-hover/cb:text-gold-soft group-hover/cb:translate-x-0.5 transition-all flex-1">
                 {cat}
               </span>
               <span className="text-xs text-nirmal-dark/40">({categoryCounts[cat]})</span>
@@ -177,7 +177,7 @@ export default function ShopCategories({
                 onChange={() => toggle(selectedPriceBuckets, bucket.label, setSelectedPriceBuckets)}
                 className="w-4 h-4 rounded accent-nirmal-maroon cursor-pointer"
               />
-              <span className="text-sm text-nirmal-dark group-hover/cb:text-nirmal-maroon transition-colors">
+              <span className="text-sm text-nirmal-dark group-hover/cb:text-gold-soft group-hover/cb:translate-x-0.5 transition-all">
                 {bucket.label}
               </span>
             </label>
@@ -197,8 +197,8 @@ export default function ShopCategories({
                   onClick={() => toggle(selectedWeights, w, setSelectedWeights)}
                   className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
                     selectedWeights.includes(w)
-                      ? 'bg-nirmal-maroon text-ink border-nirmal-maroon'
-                      : 'bg-transparent text-nirmal-dark border-nirmal-dark/20 hover:border-nirmal-maroon'
+                      ? 'bg-gold-soft text-ink border-gold-soft scale-105 shadow-[0_8px_20px_-8px_rgba(217,184,114,0.6)]'
+                      : 'bg-transparent text-ivory border-gold/25 hover:border-gold-soft hover:-translate-y-0.5'
                   }`}
                 >
                   {w}
@@ -215,7 +215,7 @@ export default function ShopCategories({
     <div className="grid lg:grid-cols-[240px_1fr] gap-8">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block">
-        <div className="sticky top-24 bg-surface border border-nirmal-dark/10 rounded-2xl p-6">
+        <div className="sticky top-24 bg-surface border border-gold/20 hover:border-gold/40 transition-colors duration-500 rounded-2xl p-6 animate-fade-in">
           <FilterPanel />
         </div>
       </aside>
@@ -224,7 +224,7 @@ export default function ShopCategories({
       <div>
         {/* Search */}
         <div className="relative mb-4">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-nirmal-dark/40">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gold-soft/70">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
           </svg>
           <input
@@ -232,19 +232,19 @@ export default function ShopCategories({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for a spice, e.g. Garam Masala..."
-            className="w-full border border-nirmal-dark/15 rounded-xl pl-10 pr-4 py-3 bg-surface text-sm focus:outline-none focus:border-nirmal-maroon shadow-sm"
+            className="input-glow w-full border border-gold/25 rounded-xl pl-10 pr-4 py-3 bg-surface text-sm text-ivory placeholder:text-ivory-muted/60 focus:outline-none"
           />
         </div>
 
         {/* Top bar */}
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-nirmal-dark/60">
-            <span className="font-bold text-nirmal-dark">{filteredProducts.length}</span> Products
+            <span key={filteredProducts.length} className="inline-block font-bold text-gold-soft animate-count-up">{filteredProducts.length}</span> Products
           </p>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="hidden sm:block border border-nirmal-dark/15 rounded-xl px-4 py-2.5 bg-surface text-sm text-nirmal-dark focus:outline-none focus:border-nirmal-maroon shadow-sm cursor-pointer"
+            className="input-glow hidden sm:block border border-gold/25 rounded-xl px-4 py-2.5 bg-surface text-sm text-ivory focus:outline-none cursor-pointer"
             aria-label="Sort products"
           >
             <option value="featured">Sort: Featured</option>
@@ -258,17 +258,17 @@ export default function ShopCategories({
         {activeFilterCount > 0 && (
           <div className="flex flex-wrap gap-2 mb-5">
             {selectedCategories.map((c) => (
-              <button key={c} onClick={() => toggle(selectedCategories, c, setSelectedCategories)} className="flex items-center gap-1.5 bg-nirmal-maroon/10 text-nirmal-maroon text-xs font-medium pl-3 pr-2 py-1.5 rounded-full">
+              <button key={c} onClick={() => toggle(selectedCategories, c, setSelectedCategories)} className="animate-pop flex items-center gap-1.5 bg-gold/10 border border-gold/30 text-gold-soft text-xs font-medium pl-3 pr-2 py-1.5 rounded-full hover:bg-gold-soft hover:text-ink transition-colors">
                 {c} <span className="text-sm leading-none">&times;</span>
               </button>
             ))}
             {selectedPriceBuckets.map((p) => (
-              <button key={p} onClick={() => toggle(selectedPriceBuckets, p, setSelectedPriceBuckets)} className="flex items-center gap-1.5 bg-nirmal-maroon/10 text-nirmal-maroon text-xs font-medium pl-3 pr-2 py-1.5 rounded-full">
+              <button key={p} onClick={() => toggle(selectedPriceBuckets, p, setSelectedPriceBuckets)} className="animate-pop flex items-center gap-1.5 bg-gold/10 border border-gold/30 text-gold-soft text-xs font-medium pl-3 pr-2 py-1.5 rounded-full hover:bg-gold-soft hover:text-ink transition-colors">
                 {p} <span className="text-sm leading-none">&times;</span>
               </button>
             ))}
             {selectedWeights.map((w) => (
-              <button key={w} onClick={() => toggle(selectedWeights, w, setSelectedWeights)} className="flex items-center gap-1.5 bg-nirmal-maroon/10 text-nirmal-maroon text-xs font-medium pl-3 pr-2 py-1.5 rounded-full">
+              <button key={w} onClick={() => toggle(selectedWeights, w, setSelectedWeights)} className="animate-pop flex items-center gap-1.5 bg-gold/10 border border-gold/30 text-gold-soft text-xs font-medium pl-3 pr-2 py-1.5 rounded-full hover:bg-gold-soft hover:text-ink transition-colors">
                 {w} <span className="text-sm leading-none">&times;</span>
               </button>
             ))}
@@ -279,18 +279,18 @@ export default function ShopCategories({
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 pb-24 lg:pb-0 items-stretch">
+        <div className="grid grid-cols-2 max-[340px]:grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 pb-24 lg:pb-0 items-stretch">
           {filteredProducts.map((product: any, index: number) => (
-            <div key={`${product.id}-${index}`} className="h-full animate-fade-up" style={{ animationDelay: `${(index % 8) * 50}ms` }}>
+            <div key={`${product.id}-${product.slug}`} className="h-full card-in" style={{ animationDelay: `${(index % 8) * 70}ms` }}>
               <ProductCard product={product} />
             </div>
           ))}
         </div>
 
         {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-full bg-nirmal-maroon/10 flex items-center justify-center mx-auto mb-4">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-nirmal-maroon" strokeWidth="1.7">
+          <div className="text-center py-20 animate-fade-up">
+            <div className="w-16 h-16 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mx-auto mb-4 animate-float">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gold-soft" strokeWidth="1.7">
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
               </svg>
             </div>
@@ -306,17 +306,17 @@ export default function ShopCategories({
       </div>
 
       {/* Mobile sticky Filter/Sort bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-nirmal-dark/10 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] grid grid-cols-2 divide-x divide-nirmal-dark/10">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 pb-[env(safe-area-inset-bottom,0px)] bg-surface/90 backdrop-blur-xl border-t border-gold/25 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.8)] grid grid-cols-2 divide-x divide-nirmal-dark/10">
         <button
           onClick={() => setMobileFilterOpen(true)}
-          className="flex items-center justify-center gap-2 py-4 text-sm font-semibold text-nirmal-dark"
+          className="flex items-center justify-center gap-2 py-4 text-sm font-semibold text-ivory active:bg-gold/10 transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 6h16M7 12h10M10 18h4" /></svg>
           Filter {activeFilterCount > 0 && `(${activeFilterCount})`}
         </button>
         <button
           onClick={() => setMobileSortOpen(true)}
-          className="flex items-center justify-center gap-2 py-4 text-sm font-semibold text-nirmal-dark"
+          className="flex items-center justify-center gap-2 py-4 text-sm font-semibold text-ivory active:bg-gold/10 transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7h18M6 12h12M10 17h4" /></svg>
           Sort: {sortLabel[sort]}
@@ -324,9 +324,9 @@ export default function ShopCategories({
       </div>
 
       {/* Mobile Filter Bottom Sheet */}
-      <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${mobileFilterOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-black/50" onClick={() => setMobileFilterOpen(false)} />
-        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-2xl max-h-[80vh] overflow-y-auto transition-transform duration-300 ${mobileFilterOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-500 ${mobileFilterOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} />
+        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-3xl border-t border-gold/30 max-h-[85dvh] overflow-y-auto pb-[env(safe-area-inset-bottom,0px)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileFilterOpen ? 'translate-y-0' : 'translate-y-full'}`}>
           <div className="p-6">
             <div className="flex justify-end mb-2">
               <button onClick={() => setMobileFilterOpen(false)} className="text-nirmal-dark/50 text-xl leading-none p-1" aria-label="Close filters">&times;</button>
@@ -334,7 +334,7 @@ export default function ShopCategories({
             <FilterPanel />
             <button
               onClick={() => setMobileFilterOpen(false)}
-              className="w-full mt-6 bg-nirmal-cta text-nirmal-cream font-semibold py-3.5 rounded-xl"
+              className="btn-sheen w-full mt-6 bg-gold-soft text-ink font-semibold py-3.5 rounded-xl active:scale-[0.98] transition-transform"
             >
               Show {filteredProducts.length} Results
             </button>
@@ -343,16 +343,16 @@ export default function ShopCategories({
       </div>
 
       {/* Mobile Sort Bottom Sheet */}
-      <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${mobileSortOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSortOpen(false)} />
-        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-2xl transition-transform duration-300 ${mobileSortOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-500 ${mobileSortOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileSortOpen(false)} />
+        <div className={`absolute bottom-0 inset-x-0 bg-surface rounded-t-3xl border-t border-gold/30 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileSortOpen ? 'translate-y-0' : 'translate-y-full'}`}>
           <div className="p-6">
             <h3 className="font-serif font-semibold text-lg text-nirmal-dark mb-4">Sort By</h3>
             {(Object.keys(sortLabel) as SortOption[]).map((key) => (
               <button
                 key={key}
                 onClick={() => { setSort(key); setMobileSortOpen(false); }}
-                className={`w-full text-left py-3.5 border-b border-nirmal-dark/5 last:border-0 text-sm ${sort === key ? 'text-nirmal-maroon font-bold' : 'text-nirmal-dark'}`}
+                className={`w-full text-left py-3.5 border-b border-nirmal-dark/5 last:border-0 text-sm ${sort === key ? 'text-gold-soft font-bold' : 'text-ivory'}`}
               >
                 {sortLabel[key]}
               </button>

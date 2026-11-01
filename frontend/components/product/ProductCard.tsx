@@ -49,7 +49,12 @@ export default function ProductCard({ product }: { product: ProductProps }) {
   };
 
   return (
-    <div className="h-full bg-surface rounded-2xl overflow-hidden border border-nirmal-dark/10 hover:border-nirmal-maroon/30 hover:shadow-lg transition-all duration-300 flex flex-col group relative">
+    <div className="@container spotlight h-full bg-surface rounded-2xl overflow-hidden border border-gold/15 hover:border-gold/60 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(0,0,0,0.9),0_0_40px_-12px_rgba(184,146,74,0.35)] transition-all duration-500 ease-out flex flex-col group relative"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
+      }}>
 
       {/* Image block — edge to edge, catalog style */}
       <Link href={`/shop/${product.slug}`} className="relative w-full aspect-[4/5] bg-parchment overflow-hidden block shrink-0">
@@ -57,12 +62,12 @@ export default function ProductCard({ product }: { product: ProductProps }) {
           src={product.image}
           alt={product.name}
           fill
-          className="object-contain p-6 group-hover:scale-110 transition-transform duration-500 ease-out"
+          className="object-contain p-[clamp(10px,8cqw,24px)] group-hover:scale-110 group-hover:-rotate-2 transition-transform duration-700 ease-out"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
         {/* Category tag */}
-        <span className="absolute top-2.5 left-2.5 bg-ink/85 text-nirmal-maroon text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-bold z-10 shadow-sm">
+        <span className="absolute top-2 left-2 max-w-[calc(100%-3.5rem)] truncate bg-ink/85 text-nirmal-maroon text-[clamp(8px,4.4cqw,10px)] px-[clamp(6px,3cqw,10px)] py-1 rounded-full uppercase tracking-wider font-bold z-10 shadow-sm">
           {product.category}
         </span>
 
@@ -74,7 +79,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
             setWishlisted((v) => !v);
           }}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-ink/85 shadow-sm flex items-center justify-center z-10 hover:scale-110 active:scale-95 transition-transform"
+          className="absolute top-1.5 right-1.5 w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-ink/85 shadow-sm flex items-center justify-center z-10 hover:scale-110 active:scale-95 transition-transform"
         >
           <svg
             width="16" height="16" viewBox="0 0 24 24"
@@ -90,7 +95,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
         {/* Desktop hover slide-up: ADD TO BAG */}
         <button
           onClick={handleAddToCart}
-          className={`hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-all duration-300 translate-y-full group-hover:translate-y-0 ${
+          className={`hover-reveal hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider transition-all duration-500 ease-out translate-y-full group-hover:translate-y-0 ${
             justAdded ? 'bg-emerald-500 text-ink' : 'bg-nirmal-maroon text-nirmal-cream hover:bg-nirmal-maroon-dark'
           }`}
         >
@@ -108,12 +113,12 @@ export default function ProductCard({ product }: { product: ProductProps }) {
       </Link>
 
       {/* Content — fixed structure so every card lines up regardless of size count */}
-      <div className="p-3.5 flex flex-col flex-grow">
+      <div className="p-[clamp(10px,5cqw,16px)] flex flex-col flex-grow">
         <Link href={`/shop/${product.slug}`} className="block">
-          <p className="text-[10px] uppercase tracking-wider font-bold text-nirmal-dark/50 mb-0.5">
+          <p className="text-[clamp(8px,4.2cqw,10px)] uppercase tracking-wider font-bold text-nirmal-dark/50 mb-0.5">
             Nirmal Masale
           </p>
-          <h3 className="text-sm font-semibold text-nirmal-dark leading-snug line-clamp-2 mb-2.5 group-hover:text-nirmal-maroon transition-colors min-h-[2.6em]">
+          <h3 className="text-[clamp(12px,6.6cqw,15px)] font-semibold text-nirmal-dark leading-snug line-clamp-2 mb-2.5 group-hover:text-nirmal-maroon transition-colors min-h-[2.6em]">
             {product.name}
           </h3>
         </Link>
@@ -130,7 +135,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
                   e.preventDefault();
                   setSelectedSizeIndex(index);
                 }}
-                className={`text-[10px] px-2 py-1 rounded-md border font-medium whitespace-nowrap transition-all cursor-pointer ${
+                className={`text-[clamp(10px,5cqw,11px)] px-[clamp(6px,3cqw,10px)] py-1.5 rounded-md border font-medium whitespace-nowrap transition-all cursor-pointer ${
                   selectedSizeIndex === index
                     ? 'bg-nirmal-maroon text-ink border-nirmal-maroon'
                     : 'bg-transparent text-nirmal-dark/70 border-nirmal-dark/15 hover:border-nirmal-maroon'
@@ -148,7 +153,7 @@ export default function ProductCard({ product }: { product: ProductProps }) {
 
         {/* Price + Add — price always paired with its quantity label */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-2 border-t border-nirmal-dark/5">
-          <span className="font-serif text-lg font-semibold text-nirmal-maroon">
+          <span className="font-serif text-[clamp(15px,8.5cqw,20px)] font-semibold text-nirmal-maroon">
             ₹{currentSize.price}
           </span>
 

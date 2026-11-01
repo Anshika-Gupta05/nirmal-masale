@@ -6,6 +6,11 @@ import WhyChooseUs from '@/components/home/WhyChooseUs';
 import Testimonials from '@/components/home/Testimonials';
 import Newsletter from '@/components/home/Newsletter';
 import ScrollReveal from '@/components/shared/ScrollReveal';
+import WordReveal from '@/components/shared/WordReveal';
+import Magnetic from '@/components/shared/Magnetic';
+import Parallax from '@/components/shared/Parallax';
+import TiltCard from '@/components/shared/TiltCard';
+import MarqueeTicker from '@/components/home/MarqueeTicker';
 import { apiUrl } from '@/lib/api';
 
 async function getFeaturedProducts() {
@@ -83,38 +88,50 @@ export default async function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-ink pt-20 md:pt-28 pb-16 md:pb-24">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(184,146,74,0.16),transparent_70%)]" />
+        <div className="absolute -top-32 left-[8%] w-[28rem] h-[28rem] rounded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
+        <div className="absolute top-40 -right-24 w-[26rem] h-[26rem] rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-6s' }} />
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <p className="eyebrow mb-6 animate-fade-up">Dehradun <span className="mx-2 text-gold">◆</span> Since 2001</p>
-            <h1 className="font-serif font-medium text-5xl md:text-7xl leading-[1.05] text-ivory animate-fade-up" style={{ animationDelay: '100ms' }}>
-              Royal aroma, <em className="text-gold-soft not-italic">stone-ground</em> to perfection
+            <p className="eyebrow mb-6 animate-fade-in">Dehradun <span className="mx-2 text-gold">◆</span> Since 2001</p>
+            <h1 className="font-serif font-medium text-[clamp(1.9rem,8.2vw,2.6rem)] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-ivory">
+              <WordReveal text="Royal aroma, stone-ground to perfection" startDelay={150} highlight={['stone-ground']} />
             </h1>
-            <p className="mt-6 text-ivory-muted text-lg max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '180ms' }}>
+            <p className="mt-6 text-ivory-muted text-lg max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '550ms' }}>
               Hand-selected, slow-ground and sealed fresh in Dehradun, so every pinch tastes the way it should.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '260ms' }}>
-              <Link href="/shop" className="bg-gold-soft text-ink px-9 py-4 text-[12px] uppercase tracking-[0.22em] font-semibold hover:bg-ivory transition-colors">
-                Shop the collection
-              </Link>
-              <Link href="/heritage" className="border border-gold/60 text-ivory px-9 py-4 text-[12px] uppercase tracking-[0.22em] hover:border-gold-soft hover:text-gold-soft transition-colors">
-                Our story
-              </Link>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center animate-fade-up" style={{ animationDelay: '700ms' }}>
+              <Magnetic>
+                <Link href="/shop" className="btn-sheen inline-block bg-gold-soft text-ink px-9 py-4 text-[12px] uppercase tracking-[0.22em] font-semibold hover:bg-ivory transition-colors">
+                  Shop the collection
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link href="/heritage" className="inline-block border border-gold/60 text-ivory px-9 py-4 text-[12px] uppercase tracking-[0.22em] hover:border-gold-soft hover:text-gold-soft hover:bg-gold/5 transition-all">
+                  Our story
+                </Link>
+              </Magnetic>
             </div>
           </div>
-          <div className="mt-14 md:mt-16 max-w-6xl mx-auto animate-fade-up" style={{ animationDelay: '340ms' }}>
-            <Showcase img="showcase-classic" alt="Nirmal Gold Masale boxes and pouches with fresh spices" priority />
+          <div className="mt-14 md:mt-16 max-w-6xl mx-auto animate-fade-up" style={{ animationDelay: '900ms' }}>
+            <Parallax speed={0.06}>
+              <Showcase img="showcase-classic" alt="Nirmal Gold Masale boxes and pouches with fresh spices" priority />
+            </Parallax>
           </div>
         </div>
       </section>
 
+      <MarqueeTicker />
+
       {/* Trust strip */}
       <section className="border-y border-gold/25 bg-surface">
         <div className="container mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 md:divide-x divide-gold/20">
-          {TRUST.map((t) => (
-            <div key={t.label} className="text-center px-4 py-3">
-              <p className="font-serif text-xl text-gold-soft">{t.label}</p>
-              <p className="text-xs text-ivory-muted mt-1">{t.sub}</p>
-            </div>
+          {TRUST.map((t, i) => (
+            <ScrollReveal key={t.label} delay={i * 90} variant="fade">
+              <div className="text-center px-4 py-3">
+                <p className="font-serif text-xl text-gold-soft">{t.label}</p>
+                <p className="text-xs text-ivory-muted mt-1">{t.sub}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
@@ -130,15 +147,17 @@ export default async function Home() {
         </ScrollReveal>
         <div className="grid md:grid-cols-2 gap-8 md:gap-10">
           {COLLECTIONS.map((c, i) => (
-            <ScrollReveal key={c.img} delay={(i % 2) * 120}>
+            <ScrollReveal key={c.img} delay={(i % 2) * 140} variant={i % 2 === 0 ? 'left' : 'right'}>
               <Link href={c.href} className="group block">
-                <Stage img={c.img} alt={c.title} sizes="(min-width:768px) 50vw, 100vw" />
+                <TiltCard max={4}>
+                  <Stage img={c.img} alt={c.title} sizes="(min-width:768px) 50vw, 100vw" />
+                </TiltCard>
                 <div className="flex items-end justify-between pt-5">
                   <div>
                     <h3 className="font-serif text-2xl md:text-3xl text-ivory group-hover:text-gold-soft transition-colors">{c.title}</h3>
                     <p className="text-sm text-ivory-muted mt-1">{c.sub}</p>
                   </div>
-                  <span className="text-gold-soft text-[11px] uppercase tracking-[0.22em] whitespace-nowrap ml-4">Explore →</span>
+                  <span className="text-gold-soft text-[11px] uppercase tracking-[0.22em] whitespace-nowrap ml-4 transition-transform duration-500 group-hover:translate-x-2">Explore →</span>
                 </div>
               </Link>
             </ScrollReveal>
@@ -149,18 +168,18 @@ export default async function Home() {
       {/* Everyday range band */}
       <section className="bg-ink bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(94,26,23,0.85),transparent_70%)] border-y border-gold/25">
         <div className="container mx-auto px-6 py-20 md:py-24 grid lg:grid-cols-12 gap-10 items-center">
-          <ScrollReveal className="lg:col-span-4">
+          <ScrollReveal className="lg:col-span-4" variant="left">
             <p className="eyebrow mb-4">Everyday Range</p>
-            <h2 className="font-serif font-medium text-4xl md:text-5xl text-ivory leading-tight">Big flavour. <span className="text-gold-soft">₹10</span> a pack.</h2>
+            <h2 className="font-serif font-medium text-4xl md:text-5xl text-ivory leading-tight">Big flavour. <span className="text-gold-shimmer">₹10</span> a pack.</h2>
             <p className="text-ivory-muted mt-5 leading-relaxed">
               Seven kitchen essentials in small, fresh-sealed boxes. Perfect for trying a new masala, or for stocking up for every meal.
             </p>
             {/* CHANGE THIS LINK */}
-            <Link href="/shop?price=Under%20%E2%82%B950" className="inline-block mt-8 border border-gold/60 px-8 py-3.5 text-[12px] uppercase tracking-[0.22em] text-ivory hover:border-gold-soft hover:text-gold-soft transition-colors">
+            <Link href="/shop?price=Under%20%E2%82%B950" className="inline-block mt-8 border border-gold/60 px-8 py-3.5 text-[12px] uppercase tracking-[0.22em] text-ivory hover:border-gold-soft hover:text-gold-soft hover:bg-gold/5 transition-all">
               Shop everyday packs
             </Link>
           </ScrollReveal>
-          <ScrollReveal delay={120} className="lg:col-span-8">
+          <ScrollReveal delay={160} className="lg:col-span-8" variant="scale">
             <Stage img="everyday" alt="Nirmal Gold ₹10 everyday masala boxes" sizes="(min-width:1024px) 66vw, 100vw" />
           </ScrollReveal>
         </div>
@@ -177,7 +196,7 @@ export default async function Home() {
             <Link href="/shop" className="text-gold-soft text-[12px] uppercase tracking-[0.22em] hover:text-ivory transition-colors">View all →</Link>
           </div>
         </ScrollReveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-2 max-[340px]:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6 items-stretch">
           {featured.length > 0 ? (
             featured.map((product: any, i: number) => (
               <ScrollReveal key={`${product.id}-${i}`} delay={i * 100} className="h-full">
@@ -193,9 +212,9 @@ export default async function Home() {
         </div>
       </section>
 
-      <ScrollReveal><WhyChooseUs /></ScrollReveal>
+      <WhyChooseUs />
       <HeritageSection />
-      <ScrollReveal><Testimonials /></ScrollReveal>
+      <Testimonials />
       <Newsletter />
     </div>
   );

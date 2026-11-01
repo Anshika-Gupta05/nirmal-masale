@@ -1,3 +1,5 @@
+import ScrollReveal from '@/components/shared/ScrollReveal';
+
 const TESTIMONIALS = [
   {
     name: 'Priya Sharma',
@@ -31,23 +33,24 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="py-16 md:py-20 bg-surface/60">
+    <section className="py-20 md:py-28 bg-ink">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
+          <span className="eyebrow mb-3 block">
             Loved By Home Cooks
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark">
+          <h2 className="font-serif text-4xl md:text-5xl font-medium text-ivory">
             What Our Customers Say
           </h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TESTIMONIALS.map((t) => (
+          {TESTIMONIALS.map((t, i) => (
+            <ScrollReveal key={t.name} delay={i * 110} className="h-full">
             <div
-              key={t.name}
-              className="bg-surface rounded-2xl p-6 shadow-sm border border-nirmal-maroon/10 flex flex-col"
+              className="relative h-full bg-surface rounded-2xl p-6 border border-gold/20 hover:border-gold/55 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.9)] transition-all duration-500 flex flex-col overflow-hidden"
             >
+              <span aria-hidden="true" className="absolute -top-3 right-4 font-serif text-8xl leading-none text-gold/10 select-none">&ldquo;</span>
               <div className="flex gap-0.5 text-nirmal-gold mb-4" aria-hidden="true">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg key={i} width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -55,19 +58,20 @@ export default function Testimonials() {
                   </svg>
                 ))}
               </div>
-              <p className="text-sm text-nirmal-dark/80 leading-relaxed mb-6 flex-grow">
+              <p className="text-sm text-ivory/85 leading-relaxed mb-6 flex-grow relative">
                 &ldquo;{t.quote}&rdquo;
               </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-nirmal-dark/10">
-                <div className="w-10 h-10 rounded-full bg-nirmal-maroon text-nirmal-cream flex items-center justify-center font-serif font-semibold shrink-0">
+              <div className="flex items-center gap-3 pt-4 border-t border-gold/15">
+                <div className="w-10 h-10 rounded-full bg-gold-soft text-ink flex items-center justify-center font-serif font-semibold shrink-0">
                   {t.initial}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-nirmal-dark">{t.name}</p>
-                  <p className="text-xs text-nirmal-dark/50">{t.role}</p>
+                  <p className="text-sm font-semibold text-ivory">{t.name}</p>
+                  <p className="text-xs text-ivory-muted">{t.role}</p>
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

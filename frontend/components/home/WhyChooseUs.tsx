@@ -1,3 +1,5 @@
+import ScrollReveal from '@/components/shared/ScrollReveal';
+
 const POINTS = [
   {
     title: 'Quality Assurance',
@@ -45,26 +47,28 @@ const POINTS = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-16 md:py-20 bg-surface border-y border-nirmal-maroon/10">
+    <section className="py-20 md:py-28 bg-surface border-y border-gold/20">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-nirmal-maroon tracking-widest uppercase text-xs font-semibold mb-2 block">
+          <span className="eyebrow mb-3 block">
             Why Nirmal Masale
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-semibold text-nirmal-dark">
+          <h2 className="font-serif text-4xl md:text-5xl font-medium text-ivory">
             Why Choose Us?
           </h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {POINTS.map((point) => (
-            <div key={point.title} className="text-center px-2">
-              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-nirmal-gold/15 text-nirmal-maroon flex items-center justify-center rotate-3 hover:rotate-0 transition-transform">
+          {POINTS.map((point, i) => (
+            <ScrollReveal key={point.title} delay={i * 120}>
+            <div className="group text-center px-2">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl border border-gold/30 bg-gold/10 text-gold-soft flex items-center justify-center rotate-3 group-hover:rotate-0 group-hover:-translate-y-1.5 group-hover:bg-gold-soft group-hover:text-ink group-hover:shadow-[0_14px_30px_-10px_rgba(217,184,114,0.5)] transition-all duration-500">
                 {point.icon}
               </div>
-              <h3 className="font-serif text-lg font-semibold text-nirmal-dark mb-2">{point.title}</h3>
-              <p className="text-sm text-nirmal-dark/65 leading-relaxed">{point.desc}</p>
+              <h3 className="font-serif text-xl font-medium text-ivory mb-2">{point.title}</h3>
+              <p className="text-sm text-ivory-muted leading-relaxed">{point.desc}</p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

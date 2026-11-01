@@ -1,4 +1,5 @@
 import ProductCard from '@/components/product/ProductCard';
+import WordReveal from '@/components/shared/WordReveal';
 import ShopCategories from '@/components/product/ShopCategories';
 import { apiUrl } from '@/lib/api';
 
@@ -74,13 +75,13 @@ export default async function ShopPage({
     <div>
       <div className="bg-ink bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(94,26,23,0.85),transparent_70%)] border-y border-gold/20 text-ivory py-14 md:py-20 relative overflow-hidden">
         <div className="container mx-auto px-6 text-center max-w-2xl relative z-10">
-          <span className="text-nirmal-gold tracking-widest uppercase text-xs font-semibold mb-2 block">
+          <span className="eyebrow mb-4 block animate-fade-in">
             Our Authentic Collection
           </span>
-          <h1 className="font-serif text-4xl font-semibold mb-4">
-            Pure Spices for Your Kitchen
+          <h1 className="font-serif text-4xl md:text-6xl font-medium mb-5 leading-[1.08]">
+            <WordReveal text="Pure Spices for Your Kitchen" startDelay={80} highlight={['Pure']} />
           </h1>
-          <p className="text-ivory/80">
+          <p className="text-ivory-muted animate-fade-up" style={{ animationDelay: '500ms' }}>
             Explore our full range of traditionally processed, stone-ground, and hygienically packed spices — blended, ground, and whole.
           </p>
         </div>
