@@ -5,16 +5,28 @@ from __future__ import annotations
 # ruff: noqa: UP045
 import os
 import uuid
+from datetime import datetime, timezone
 from typing import Optional
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from pymongo.errors import DuplicateKeyError
 
 # Import our MongoDB collections!
-from database import get_orders_collection, get_products_collection
-from emailer import email_configured, is_valid_email, send_order_confirmation
+from database import (
+    get_orders_collection,
+    get_products_collection,
+    get_subscribers_collection,
+)
+from emailer import (
+    email_configured,
+    is_valid_email,
+    send_newsletter_welcome,
+    send_order_confirmation,
+)
+from payments import MAX_QTY_PER_LINE, price_cart
 from payments import router as payments_router
 
 app = FastAPI(
@@ -25,9 +37,12 @@ app = FastAPI(
 
 # CORS setup for Next.js frontend. Set FRONTEND_URL in backend/.env for production
 # (e.g. https://www.nirmalgold.in) - it is added to the allowed origins.
-_origins = ["http://localhost:3000", "http://192.168.1.14:3000"]
+# CORS_ORIGINS is an optional comma-separated list for extra origins, e.g. the non-www version of
+# the site or a preview URL: CORS_ORIGINS=https://nirmalgold.in,https://my-preview.example.com
+_origins = ["http://localhost:3000"]
 if os.getenv("FRONTEND_URL"):
     _origins.append(os.getenv("FRONTEND_URL").rstrip("/"))
+_origins += [o.strip().rstrip("/") for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -120,15 +135,15 @@ def get_product_by_slug(slug: str):
 class CartItemSchema(BaseModel):
     product_name: str
     weight: str
-    quantity: int
-    price: float
+    quantity: int = Field(ge=1, le=MAX_QTY_PER_LINE)
+    price: Optional[float] = None  # accepted for old clients, never used: prices come from the database
 
 class CheckoutRequestSchema(BaseModel):
     first_name: str
     last_name: str
     address: str
-    total_amount: float
-    items: list[CartItemSchema]
+    total_amount: Optional[float] = None  # ignored: the server works out the total itself
+    items: list[CartItemSchema] = Field(min_length=1)
     # Optional extras - older clients that don't send them keep working.
     email: Optional[str] = None
     phone: Optional[str] = None
@@ -140,15 +155,20 @@ def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTas
     tracking_number = f"NRM-{str(uuid.uuid4().hex[:6]).upper()}"
     collection = get_orders_collection()
 
+    # Price the order from MongoDB, exactly like online payments do. Never trust the browser's total.
+    priced_items, _subtotal, _shipping, total_amount = price_cart(
+        [(item.product_name, item.weight, item.quantity) for item in request.items]
+    )
+
     # In MongoDB, we can beautifully embed the items directly inside the order document!
     order_document = {
         "order_number": tracking_number,
         "customer_first_name": request.first_name,
         "customer_last_name": request.last_name,
         "address": request.address,
-        "total_amount": request.total_amount,
+        "total_amount": total_amount,
         "status": "Processing",
-        "items": [item.dict() for item in request.items],
+        "items": priced_items,
         "customer_email": (request.email or "").strip(),
         "customer_phone": request.phone,
         "payment_method": request.payment_method,
@@ -171,8 +191,8 @@ def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTas
                     "last_name": request.last_name,
                     "email": request.email,
                     "phone": request.phone,
-                    "items": [item.dict() for item in request.items],
-                    "total_amount": request.total_amount,
+                    "items": priced_items,
+                    "total_amount": total_amount,
                     "shipping_address": request.shipping_address or request.address,
                     "payment_method": request.payment_method,
                 },
@@ -185,8 +205,28 @@ def create_order(request: CheckoutRequestSchema, background_tasks: BackgroundTas
         "status": "success", 
         "message": "Order placed successfully!",
         "order_number": tracking_number,
+        "total_amount": total_amount,
         "email_queued": email_queued,
     }
+
+def _public_order(order: dict) -> dict:
+    """Order tracking is open to anyone who knows an order number, so only return what the
+    tracking page needs, with the customer's identity trimmed (no email, phone or full address)."""
+    first = (order.get("customer_first_name") or "").strip()
+    last = (order.get("customer_last_name") or "").strip()
+    address = order.get("shipping_address") or order.get("address") or ""
+    parts = [p.strip() for p in address.split(",") if p.strip()]
+    return {
+        "order_number": order.get("order_number"),
+        "status": order.get("status"),
+        "payment_status": order.get("payment_status"),
+        "total_amount": order.get("total_amount"),
+        "items": order.get("items", []),
+        "customer_first_name": first,
+        "customer_last_name": f"{last[0]}." if last else "",
+        "address": ", ".join(parts[-2:]),  # e.g. "Dehradun, Uttarakhand - 248001"
+    }
+
 
 @app.get("/api/orders/{order_number}")
 def get_order(order_number: str):
@@ -196,10 +236,41 @@ def get_order(order_number: str):
     if not order:
         return {"status": "error", "message": "Order not found"}
 
-    order["id"] = str(order["_id"])
-    del order["_id"]
+    return {"status": "success", "data": _public_order(order)}
 
-    return {"status": "success", "data": order}
+
+# --- NEWSLETTER ---
+
+class SubscribeSchema(BaseModel):
+    email: str
+
+@app.post("/api/newsletter/subscribe")
+def subscribe_newsletter(request: SubscribeSchema, background_tasks: BackgroundTasks):
+    email = request.email.strip().lower()
+    if not is_valid_email(email):
+        raise HTTPException(400, "Please enter a valid email address.")
+
+    # One row per address. Only a NEW address gets the welcome mail, so pressing Subscribe
+    # repeatedly (or typing someone else's address) can never be used to spam an inbox.
+    try:
+        result = get_subscribers_collection().update_one(
+            {"email": email},
+            {"$setOnInsert": {"email": email, "subscribed_at": datetime.now(timezone.utc), "source": "website"}},
+            upsert=True,
+        )
+        is_new = result.upserted_id is not None
+    except DuplicateKeyError:  # two identical requests raced each other
+        is_new = False
+
+    email_queued = False
+    if is_new:
+        if email_configured():
+            background_tasks.add_task(send_newsletter_welcome, email)
+            email_queued = True
+        else:
+            print("[email] SMTP_HOST is not set in backend/.env - skipping welcome email.")
+
+    return {"status": "success", "already_subscribed": not is_new, "email_queued": email_queued}
 
 
 if __name__ == "__main__":

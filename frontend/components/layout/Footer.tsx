@@ -26,8 +26,8 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <div className="flex flex-col items-start gap-3">
-          <div className="relative w-24 h-12">
-            <Image src="/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" fill className="object-contain" priority />
+          <div className="relative w-32 h-16">
+            <Image src="/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" fill sizes="128px" className="object-contain" priority />
           </div>
           <p className="text-sm text-ivory-muted">
             Pure Spices, Royal Taste. Established 2001 in Dehradun, Uttarakhand.

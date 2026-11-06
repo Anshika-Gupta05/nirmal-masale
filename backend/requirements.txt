@@ -13,3 +13,5 @@ sentence-transformers
 transformers
 torch
 scikit-learn
+openpyxl
+pymongo

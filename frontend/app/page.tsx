@@ -33,11 +33,12 @@ const TRUST = [
 ];
 
 // One tile per shop category. Images live in /public/posters/<img>.webp
+// `tint` is a spice colour used for the soft glow behind each tile and the small dot by its title.
 const COLLECTIONS = [
-  { img: 'blended_spices', title: 'Blended Spices', sub: 'Garam, chat, chana, biryani and more ready-made masalas', href: '/shop?category=Blended%20Spices' },
-  { img: 'ground_spices', title: 'Ground Spices', sub: 'Haldi, mirch, coriander, jeera, amchur and more', href: '/shop?category=Ground%20Spices' },
-  { img: 'speciality_essentials', title: 'Specialty Essentials', sub: 'Kasuri methi, salts, saunf, besan, poha and more', href: '/shop?category=Specialty%20Essentials' },
-  { img: 'whole_spices_and_seeds', title: 'Whole Spices & Seeds', sub: 'Jeera, ajwain and other whole seeds', href: '/shop?category=Whole%20Spices%20%26%20Seeds' },
+  { img: 'blended_spices', title: 'Blended Spices', tint: '#C8372D', sub: 'Garam, chat, chana, biryani and more ready-made masalas', href: '/shop?category=Blended%20Spices' },
+  { img: 'ground_spices', title: 'Ground Spices', tint: '#E0A526', sub: 'Haldi, mirch, coriander, jeera, amchur and more', href: '/shop?category=Ground%20Spices' },
+  { img: 'speciality_essentials', title: 'Specialty Essentials', tint: '#6E9B4E', sub: 'Kasuri methi, salts, saunf, besan, poha and more', href: '/shop?category=Specialty%20Essentials' },
+  { img: 'whole_spices_and_seeds', title: 'Whole Spices & Seeds', tint: '#D2691E', sub: 'Jeera, ajwain and other whole seeds', href: '/shop?category=Whole%20Spices%20%26%20Seeds' },
 ];
 
 // Every poster tile uses the exact same frame (5:2), so all images display at an identical size.
@@ -88,7 +89,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-ink pt-20 md:pt-28 pb-16 md:pb-24">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(184,146,74,0.16),transparent_70%)]" />
-        <div className="absolute -top-32 left-[8%] w-md h-[28h-112ded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
+        <div className="absolute -top-32 left-[8%] w-md h-112 rounded-full bg-gold/10 blur-3xl animate-drift pointer-events-none" />
         <div className="absolute top-40 -right-24 w-104 h-104 rounded-full bg-oxblood/40 blur-3xl animate-drift pointer-events-none" style={{ animationDelay: '-6s' }} />
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
@@ -148,13 +149,22 @@ export default async function Home() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-10">
           {COLLECTIONS.map((c, i) => (
             <ScrollReveal key={c.img} delay={(i % 2) * 140} variant={i % 2 === 0 ? 'left' : 'right'}>
-              <Link href={c.href} className="group block">
+              <Link href={c.href} className="group relative isolate block">
+                {/* Soft spice-coloured glow behind the tile; brightens on hover */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-[2%] top-[-6%] bottom-[14%] -z-10 blur-3xl opacity-30 transition-opacity duration-700 group-hover:opacity-60"
+                  style={{ background: `radial-gradient(ellipse 70% 60% at 50% 50%, ${c.tint}, transparent 75%)` }}
+                />
                 <TiltCard max={4}>
                   <Stage img={c.img} alt={c.title} sizes="(min-width:768px) 50vw, 100vw" />
                 </TiltCard>
                 <div className="flex items-end justify-between pt-5">
                   <div>
-                    <h3 className="font-serif text-2xl md:text-3xl text-ivory group-hover:text-gold-soft transition-colors">{c.title}</h3>
+                    <h3 className="font-serif text-2xl md:text-3xl text-ivory group-hover:text-gold-soft transition-colors">
+                      <span aria-hidden className="mr-3 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ backgroundColor: c.tint }} />
+                      {c.title}
+                    </h3>
                     <p className="text-sm text-ivory-muted mt-1">{c.sub}</p>
                   </div>
                   <span className="text-gold-soft text-[11px] uppercase tracking-[0.22em] whitespace-nowrap ml-4 transition-transform duration-500 group-hover:translate-x-2">Explore →</span>

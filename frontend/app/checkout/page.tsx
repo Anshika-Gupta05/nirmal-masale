@@ -497,7 +497,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right Side: Order Summary */}
-        <div className="lg:col-span-5 bg-nirmal-cream border border-nirmal-gold/30 p-8 rounded-2xl shadow-sm lg:sticky lg:top-24">
+        <div className="lg:col-span-5 bg-nirmal-cream border border-nirmal-gold/30 p-8 rounded-2xl shadow-sm lg:sticky lg:top-28">
           <h2 className="font-serif text-xl font-semibold text-nirmal-dark mb-6">Order Summary</h2>
 
           <div className="space-y-4 mb-6 max-h-75 overflow-y-auto pr-2">

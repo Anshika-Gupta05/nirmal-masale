@@ -215,7 +215,7 @@ export default function ShopCategories({
     <div className="grid lg:grid-cols-[240px_1fr] gap-8">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block">
-        <div className="sticky top-24 bg-surface border border-gold/20 hover:border-gold/40 transition-colors duration-500 rounded-2xl p-6 animate-fade-in">
+        <div className="sticky top-28 bg-surface border border-gold/20 hover:border-gold/40 transition-colors duration-500 rounded-2xl p-6 animate-fade-in">
           <FilterPanel />
         </div>
       </aside>

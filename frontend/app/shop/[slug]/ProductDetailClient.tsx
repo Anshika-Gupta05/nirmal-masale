@@ -64,7 +64,7 @@ export default function ProductDetailClient({
       <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
 
         {/* Left: Product Image Showcase - PURE WHITE + BLEND MODE */}
-        <div className="animate-fade-in relative h-96 lg:h-125 bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-24">
+        <div className="animate-fade-in relative h-96 lg:h-125 bg-[radial-gradient(ellipse_at_50%_85%,#FBF6EA,#EFE3CB)] border border-gold/40 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm lg:sticky lg:top-28">
           <span className="absolute top-4 left-4 bg-ink/85 text-gold-soft text-xs px-3 py-1.5 rounded-full uppercase tracking-wider font-semibold z-10 border border-nirmal-maroon/10">
             {dbProduct.category}
           </span>

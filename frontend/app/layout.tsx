@@ -29,8 +29,11 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+// Set NEXT_PUBLIC_SITE_URL to the real domain (see frontend/.env.example).
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://nirmalmasale.in").replace(/\/$/, "");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nirmalmasale.in"),
+  metadataBase: new URL(SITE_URL),
   title: "Nirmal Gold | Pure, Stone-Ground Spices Since 2001",
   description:
     "Bring royal aroma and authentic taste to your kitchen. Nirmal Masale hand-selects, cleans and stone-grinds every spice in Dehradun — 100% pure, hygienically packed, trusted by lakhs of Indian homes since 2001.",
@@ -48,7 +51,7 @@ export const metadata: Metadata = {
     title: "Nirmal Gold | Pure, Stone-Ground Spices Since 2001",
     description:
       "100% pure, stone-ground spices crafted with passion since 2001. Shop authentic blended, ground and whole spices online.",
-    url: "https://nirmalmasale.in",
+    url: SITE_URL,
     siteName: "Nirmal Masale",
     locale: "en_IN",
     type: "website",
@@ -66,7 +69,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${inter.variable} h-full antialiased scroll-smooth`}
+      className={`${display.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="grain min-h-full flex flex-col bg-ink text-ivory">
         <CartProvider>

@@ -75,6 +75,24 @@ def _unit_price(name: str, weight: str) -> Optional[float]:
     return None
 
 
+def price_cart(lines: list[tuple[str, str, int]]) -> tuple[list[dict[str, Any]], float, float, float]:
+    """Price a cart from MongoDB. `lines` = [(product_name, weight, quantity)].
+
+    Returns (priced_items, subtotal, shipping, total). Used by BOTH online and Cash-on-Delivery
+    checkout so the amount can never be set by the browser. Raises HTTP 400 for an unknown product.
+    """
+    priced_items: list[dict[str, Any]] = []
+    subtotal = 0.0
+    for name, weight, quantity in lines:
+        price = _unit_price(name, weight)
+        if price is None:
+            raise HTTPException(400, f"'{name} ({weight})' is no longer available. Please refresh your cart.")
+        subtotal += price * quantity
+        priced_items.append({"product_name": name, "weight": weight, "quantity": quantity, "price": price})
+    shipping = 0 if subtotal > FREE_SHIPPING_ABOVE else SHIPPING_FEE
+    return priced_items, subtotal, shipping, round(subtotal + shipping, 2)
+
+
 def _constant_time_eq(a: str, b: str) -> bool:
     return hmac.compare_digest(a.encode(), b.encode())
 
@@ -154,22 +172,10 @@ def create_payment_order(req: CreatePaymentOrder):
     if not is_valid_email(req.email):
         raise HTTPException(400, "Please enter a valid email address.")
 
-    # Re-price every line from the database.
-    priced_items: list[dict[str, Any]] = []
-    subtotal = 0.0
-    for item in req.items:
-        price = _unit_price(item.product_name, item.weight)
-        if price is None:
-            raise HTTPException(
-                400, f"'{item.product_name} ({item.weight})' is no longer available. Please refresh your cart."
-            )
-        subtotal += price * item.quantity
-        priced_items.append(
-            {"product_name": item.product_name, "weight": item.weight, "quantity": item.quantity, "price": price}
-        )
-
-    shipping = 0 if subtotal > FREE_SHIPPING_ABOVE else SHIPPING_FEE
-    total = round(subtotal + shipping, 2)
+    # Re-price every line from the database (never trust prices sent by the browser).
+    priced_items, _subtotal, _shipping, total = price_cart(
+        [(item.product_name, item.weight, item.quantity) for item in req.items]
+    )
     amount_paise = round(total * 100)
 
     order_number = f"NRM-{uuid.uuid4().hex[:6].upper()}"

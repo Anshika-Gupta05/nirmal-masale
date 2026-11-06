@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCart } from './CartProvider';
+import AnnouncementBar from './AnnouncementBar';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -67,12 +68,7 @@ export default function Header() {
 
   return (
     <>
-      {/* Announcement Bar */}
-      <div className="bg-surface-2 text-gold-soft text-[clamp(9px,2.5vw,11px)] tracking-widest sm:tracking-[0.18em] uppercase border-b border-gold/30">
-        <div className="container mx-auto px-6 py-2 text-center font-medium">
-          Free delivery above ₹300 <span className="text-gold mx-2">◆</span> Pure &amp; stone-ground since 2001
-        </div>
-      </div>
+      <AnnouncementBar />
 
       <header
         ref={headerRef}
@@ -84,15 +80,15 @@ export default function Header() {
             : 'bg-ink/95 backdrop-blur border-gold/15'
         }`}
       >
-        <nav className={`container mx-auto px-4 sm:px-6 flex items-center justify-between transition-all duration-500 ease-out ${scrolled ? 'h-16' : 'h-20'}`}>
+        <nav className={`container mx-auto px-4 sm:px-6 flex items-center justify-between transition-all duration-500 ease-out ${scrolled ? 'h-16 sm:h-20' : 'h-20 sm:h-24'}`}>
           <Link
             href="/"
             className={`relative shrink-0 transition-all duration-500 ease-out hover:scale-105 ${
-              scrolled ? 'w-20 h-10' : 'w-24 h-12'
+              scrolled ? 'w-24 h-12 sm:w-28 sm:h-14' : 'w-28 h-14 sm:w-32 sm:h-16'
             }`}
             aria-label="Nirmal Gold Masale home"
           >
-            <Image src="/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" fill className="object-contain" priority />
+            <Image src="/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" fill sizes="128px" className="object-contain" priority />
           </Link>
 
           <div className="hidden md:flex items-center gap-[clamp(1.1rem,2.8vw,2.5rem)]">

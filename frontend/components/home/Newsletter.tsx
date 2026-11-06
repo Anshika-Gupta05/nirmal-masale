@@ -1,15 +1,40 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/api';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [mailSent, setMailSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    setSubmitted(true);
+    const clean = email.trim();
+    if (!clean || loading) return;
+
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(apiUrl('/api/newsletter/subscribe'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: clean }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(typeof data.detail === 'string' ? data.detail : 'Something went wrong. Please try again.');
+        return;
+      }
+      setMailSent(Boolean(data.email_queued));
+      setSubmitted(true);
+    } catch {
+      setError("Couldn't reach the server. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,7 +50,9 @@ export default function Newsletter() {
 
           {submitted ? (
             <div className="bg-surface-2 border border-gold/40 rounded-xl p-5 text-gold-soft font-medium">
-              Thank you! We&apos;ll keep you posted on what&apos;s new.
+              {mailSent
+                ? "Thank you! A welcome email is on its way. Please check your inbox (and spam folder)."
+                : "Thank you! We'll keep you posted on what's new."}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -41,11 +68,15 @@ export default function Newsletter() {
               />
               <button
                 type="submit"
-                className="bg-gold-soft text-ink font-semibold px-6 py-3.5 rounded-xl hover:bg-nirmal-gold transition-colors shadow-md whitespace-nowrap"
+                disabled={loading}
+                className="bg-gold-soft text-ink font-semibold px-6 py-3.5 rounded-xl hover:bg-nirmal-gold transition-colors shadow-md whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Subscribe
+                {loading ? 'Subscribing…' : 'Subscribe'}
               </button>
             </form>
+          )}
+          {error && !submitted && (
+            <p role="alert" className="mt-3 text-sm text-red-300">{error}</p>
           )}
 
           <div className="flex items-center justify-center gap-4 mt-8">

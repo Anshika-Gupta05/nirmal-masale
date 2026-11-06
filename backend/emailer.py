@@ -288,3 +288,87 @@ def send_order_confirmation(order: dict[str, Any]) -> bool:
     except Exception:
         log.exception("Could not send confirmation email for order %s", order.get("order_number"))
         return False
+
+
+# ----------------------------------------------------------------------------- newsletter welcome
+def build_welcome_message(email: str) -> EmailMessage:
+    """Short 'thanks for subscribing' email, in the same look as the order confirmation."""
+    e = escape
+    F = "Helvetica,Arial,sans-serif"
+    GREY, LINE = "#6B6B6B", "#EAEAEA"
+    shop_url = f"{_site()}/shop"
+
+    text_body = "\n".join([
+        "Hi there,",
+        "",
+        "Thank you for subscribing to Nirmal Gold Masale!",
+        "",
+        "You'll be the first to hear about new spice blends, seasonal combos and kitchen tips, straight from Dehradun.",
+        "",
+        f"Browse our spices: {shop_url}",
+        "",
+        "Don't want these emails? Just reply with the word UNSUBSCRIBE and we'll remove you.",
+        "",
+        "- Team Nirmal Gold Masale",
+    ])
+
+    html_body = f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>Welcome to Nirmal Gold Masale</title></head>
+<body style="margin:0;padding:0;background:#F2F2F2;font-family:{F};">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Thanks for subscribing. New blends, seasonal combos and kitchen tips are on their way.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F2F2F2;padding:20px 10px;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:6px;overflow:hidden;">
+
+  <tr><td align="center" style="padding:22px 28px;border-bottom:3px solid {GOLD};">
+    <img src="{e(_site())}/nirmal_gold_masale_logo.png" alt="Nirmal Gold Masale" width="130" style="display:block;border:0;max-width:130px;height:auto;">
+  </td></tr>
+
+  <tr><td align="center" style="padding:34px 28px 10px;font-family:{F};">
+    <h1 style="margin:0 0 10px;font-size:22px;color:{INK};font-weight:bold;">Welcome to the family!</h1>
+    <p style="margin:0;font-size:14px;line-height:1.7;color:{GREY};">Thank you for subscribing. You&rsquo;ll be the first to hear about new spice blends, seasonal combos and kitchen tips, straight from Dehradun.</p>
+  </td></tr>
+
+  <tr><td align="center" style="padding:24px 28px 8px;">
+    <a href="{e(shop_url)}" style="display:inline-block;padding:14px 38px;background:{INK};color:{GOLD_SOFT};text-decoration:none;border-radius:6px;font-family:{F};font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">Browse our spices</a>
+  </td></tr>
+
+  <tr><td style="padding:26px 28px 30px;font-family:{F};">
+    <div style="border-top:1px solid {LINE};padding-top:18px;font-size:12px;line-height:1.7;color:{GREY};">
+      Don&rsquo;t want these emails? Just reply with the word <strong>UNSUBSCRIBE</strong> and we&rsquo;ll remove you.
+    </div>
+  </td></tr>
+
+  <tr><td align="center" style="background:{INK};padding:18px 28px;font-family:{F};">
+    <div style="font-size:11px;letter-spacing:3px;color:{GOLD_SOFT};">PURE SPICES &bull; ROYAL TASTE</div>
+    <div style="font-size:11px;color:#B9A992;margin-top:6px;">&copy; Nirmal Gold Masale &middot; Dehradun, since 2001</div>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>"""
+
+    msg = EmailMessage()
+    from_name = os.getenv("MAIL_FROM_NAME", "Nirmal Gold Masale")
+    from_addr = os.getenv("MAIL_FROM_ADDRESS") or os.getenv("SMTP_USER") or "no-reply@localhost"
+    msg["Subject"] = "Welcome to Nirmal Gold Masale"
+    msg["From"] = formataddr((from_name, from_addr))
+    msg["To"] = email.strip()
+    reply_to = os.getenv("MAIL_REPLY_TO")
+    if reply_to:
+        msg["Reply-To"] = reply_to
+    msg.set_content(text_body)
+    msg.add_alternative(html_body, subtype="html")
+    return msg
+
+
+def send_newsletter_welcome(email: str) -> bool:
+    """Runs in a FastAPI background task. Never raises: a mail problem must not break sign-up."""
+    try:
+        _deliver(build_welcome_message(email))
+        log.info("Newsletter welcome email sent to %s", email)
+        return True
+    except Exception:
+        log.exception("Could not send newsletter welcome email to %s", email)
+        return False

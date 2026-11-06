@@ -1,9 +1,8 @@
 const MESSAGES = [
-  'Since 2001',
-  '100% Pure & Stone Ground',
-  'No Artificial Additives',
-  'Free Delivery Above ₹300',
+  'Pure Spices, Royal Taste',
+  'Hand-Selected in Dehradun',
   'Hygienically Packed',
+  'Sealed Fresh',
   'Loved By Lakhs of Homes',
 ];
 
